@@ -568,4 +568,35 @@ const longestPalindromeLinear = (s) => {
   return s.slice(start, start + maxLen);
 };
 
-const findDuplicate = (nums) => {};
+const nums = [3, 1, 3, 4, 2];
+
+const findDuplicate = (nums) => {
+  //25% runtime
+  //22 memory
+  //Time O(n)
+  //Space O(n)
+  const obj = {};
+
+  for (const n of nums) {
+    if (!obj.hasOwnProperty(n)) {
+      obj[n] = true;
+    } else {
+      return n;
+    }
+  }
+};
+
+const findDuplicateF = (nums) => {
+  //65% runtime
+  //96% memory
+  //Time O(n)
+  //Space O(1)
+  while (nums[0] != nums[nums[0]]) {
+    const nxt = nums[nums[0]];
+    nums[nums[0]] = nums[0];
+    nums[0] = nxt;
+  }
+  return nums[0];
+};
+
+findDuplicateF(nums);
