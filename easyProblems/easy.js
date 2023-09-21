@@ -26,4 +26,23 @@ const upperBound = (nums, target) => {
   return -1;
 };
 
-console.log("coming from proto " + nums.upperBound(6));
+//console.log("coming from proto " + nums.upperBound(6));
+
+const createInfiniteObject = () => {
+  return new Proxy(
+    {},
+    {
+      get: function (target, propKey) {
+        if (typeof propKey === "string") {
+          return function () {
+            return propKey;
+          };
+        }
+      },
+    }
+  );
+};
+
+const obj = createInfiniteObject();
+
+console.log(obj.abc123());
