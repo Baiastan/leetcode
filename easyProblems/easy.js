@@ -56,6 +56,35 @@ const fibGenerator = function* () {
 
 const fibGen = fibGenerator();
 
-console.log(fibGen.next().value);
-console.log(fibGen.next().value);
-console.log(fibGen.next().value);
+const createCounter = (init) => {
+  let sum = init;
+
+  return {
+    increment: () => ++sum,
+    decrement: () => --sum,
+    reset: () => (sum = init),
+  };
+};
+
+const counter = createCounter(3);
+
+const once = (fn) => {
+  let limit = 1;
+
+  return function (...args) {
+    if (limit === 1) {
+      limit++;
+      return fn(...args);
+    } else {
+      return undefined;
+    }
+  };
+};
+
+let fn = (a, b, c) => a * b * c;
+
+let onceFn = once(fn);
+
+console.log(onceFn(5, 7, 4));
+console.log(onceFn(1, 2, 3));
+console.log(onceFn(1, 2, 3));
