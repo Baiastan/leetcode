@@ -41,8 +41,21 @@ const createInfiniteObject = () => {
       },
     }
   );
+  My;
 };
 
 const obj = createInfiniteObject();
 
-console.log(obj.abc123());
+const fibGenerator = function* () {
+  let [prev, curr] = [0, 2];
+  while (true) {
+    yield prev;
+    [prev, curr] = [curr, prev + curr];
+  }
+};
+
+const fibGen = fibGenerator();
+
+console.log(fibGen.next().value);
+console.log(fibGen.next().value);
+console.log(fibGen.next().value);
