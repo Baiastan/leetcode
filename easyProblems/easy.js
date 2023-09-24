@@ -85,6 +85,29 @@ let fn = (a, b, c) => a * b * c;
 
 let onceFn = once(fn);
 
-console.log(onceFn(5, 7, 4));
-console.log(onceFn(1, 2, 3));
-console.log(onceFn(1, 2, 3));
+// console.log(onceFn(5, 7, 4));
+// console.log(onceFn(1, 2, 3));
+// console.log(onceFn(1, 2, 3));
+
+const chunk = (arr, size) => {
+  const newArr = [];
+  const length = arr.length;
+  let index = 0;
+  while (index < length) {
+    const subArr = [];
+    let counter = 0;
+
+    while (counter < size && index < length) {
+      subArr.push(arr[index]);
+
+      counter++;
+      index++;
+    }
+
+    newArr.push(subArr);
+  }
+
+  return newArr;
+};
+
+console.log(chunk([8, 5, 3, 2, 6], 6));
