@@ -1,5 +1,11 @@
 const nums = [3, 4, 6, 6, 6, 6, 6];
 const target = 6;
+
+const TEST_DATA = {
+  nums7: [3, 4, 6, 6, 6, 6, 6],
+  nums3: [3, 3, 3],
+  target: 3,
+};
 //prototype
 Array.prototype.upperBound = function (target) {
   // Time O(n)
@@ -110,4 +116,80 @@ const chunk = (arr, size) => {
   return newArr;
 };
 
-console.log(chunk([8, 5, 3, 2, 6], 6));
+//optimized chunk array
+
+const chunkOptimized = (arr, size) => {
+  const newArr = [];
+  let index = 0;
+
+  while (index < arr.length) {
+    newArr.push(arr.slice(index, index + size));
+    index += size;
+  }
+
+  return newArr;
+};
+
+class ArrayWrapper {
+  constructor(array) {
+    this.array = array;
+  }
+
+  [Symbol.toPrimitive](hint) {
+    if (hint === "string") {
+      return `[${this.array.join(",")}]`;
+    }
+
+    return this.array.reduce((acc, el) => (acc += el), 0);
+  }
+}
+
+//same problem with constructor function
+
+const ArrayWrapperFoo = function (nums) {
+  this.nums = nums;
+};
+
+ArrayWrapperFoo.prototype.valueOf = function () {
+  return this.nums.reduce((acc, el) => (acc += el), 0);
+};
+
+ArrayWrapperFoo.prototype.toString = function () {
+  return `[${this.nums.join(",")}]`;
+};
+
+const obj1 = new ArrayWrapperFoo(TEST_DATA.nums3);
+const obj2 = new ArrayWrapperFoo(TEST_DATA.nums3);
+
+const createHelloWorld = function () {
+  return function (...args) {
+    return "Hello World";
+  };
+};
+
+const expect = function (val) {
+  this.val = val;
+
+  return {
+    toBe: (val) => {
+      if (val === this.val) {
+        return true;
+      } else {
+        throw new Error("Not Equal");
+      }
+    },
+    notToBe: (val) => {
+      if (val !== this.val) {
+        return true;
+      } else {
+        throw new Error("Equal");
+      }
+    },
+  };
+};
+
+const argumentsLength = function (...args) {
+  return args.length;
+};
+
+//console.log(argumentsLength(1, 2, 3, 56, 56, 6, 5, null, null, 76, 7, 67));
