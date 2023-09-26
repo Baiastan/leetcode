@@ -193,3 +193,15 @@ const argumentsLength = function (...args) {
 };
 
 //console.log(argumentsLength(1, 2, 3, 56, 56, 6, 5, null, null, 76, 7, 67));
+
+const cancellable = function (fn, args, t) {};
+
+Date.prototype.nextDay = function () {
+  this.setDate(this.getDate() + 1);
+
+  const yyyy = this.getFullYear();
+  const mm = String(this.getMonth() + 1).padStart(2, "0");
+  const dd = String(this.getDate()).padStart(2, "0");
+
+  return `${yyyy}-${mm}-${dd}`;
+};
