@@ -194,7 +194,26 @@ const argumentsLength = function (...args) {
 
 //console.log(argumentsLength(1, 2, 3, 56, 56, 6, 5, null, null, 76, 7, 67));
 
-const cancellable = function (fn, args, t) {};
+const cancellable = function (fn, args, t) {
+  const timeoutId = setTimeout(() => {
+    return fn(...args);
+  }, t);
+
+  return function cancelFn() {
+    clearTimeout(timeoutId);
+  };
+};
+
+const fn1 = (...args) => console.log("Function called with:", ...args);
+const args = [1, 2, 3];
+const t = 5000;
+const cancelT = 4000;
+
+const cancelFn = cancellable(fn, args, t);
+// setTimeout(() => {
+//   console.log("Cancel function invoked");
+//   cancelFn();
+// }, 3000);
 
 Date.prototype.nextDay = function () {
   this.setDate(this.getDate() + 1);
@@ -205,3 +224,20 @@ Date.prototype.nextDay = function () {
 
   return `${yyyy}-${mm}-${dd}`;
 };
+
+//console.log(new Date().nextDay());
+
+const addTwoPromises = async function (promise1, promise2) {
+  try {
+    const res = await Promise.race([promise1, promise2]);
+    return res;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const promise1 = new Promise((resolve) => setTimeout(() => resolve(2), 20));
+const promise2 = new Promise((resolve) => setTimeout(() => resolve(5), 60));
+
+addTwoPromises(promise1, promise2).then((result) => console.log(result));
