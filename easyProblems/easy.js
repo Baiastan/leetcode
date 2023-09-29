@@ -240,4 +240,12 @@ const addTwoPromises = async function (promise1, promise2) {
 const promise1 = new Promise((resolve) => setTimeout(() => resolve(2), 20));
 const promise2 = new Promise((resolve) => setTimeout(() => resolve(5), 60));
 
-addTwoPromises(promise1, promise2).then((result) => console.log(result));
+//addTwoPromises(promise1, promise2).then((result) => console.log(result));
+
+const sortBy = function (arr, fn) {
+  return arr.sort((a, b) => fn(a) - fn(b));
+};
+
+const fn2 = (x) => x;
+
+console.log(sortBy([4, 5, 7, 1, 2, 3], fn2));
