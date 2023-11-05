@@ -1,3 +1,27 @@
+//Divide and Conquer
+//Backtracking
+//Window Slider
+//Two Pointer
+
+// -> If we are dealing with top/maximum/minimum/closest 'K' elements among 'N' elements, we will be using a Heap.
+
+// -> If the given input is a sorted array or a list, we will either be using Binray Search or the Two Pointers strategy.
+
+// -> If we need to try all combinations (or permutations) of the input, we can either use Backtracking or Breadth First Search.
+
+//Before jumping to another topic, make sure to understand fully the pattern
+//Start with easy and medium
+//Dont spend more than 30 mins on EASY
+//Dont spend more than 1 hour on MEDIUM
+
+//Learn from the solutions!
+
+//Revisit solutions
+
+//Topics to focus on
+//Binary Search, Two Pointers, Binary Tree,
+//Backtracking, DFS, BFS, Graph, Dynamic Programming
+
 const nums = [3, 4, 6, 6, 6, 6, 6];
 const target = 6;
 
@@ -248,4 +272,131 @@ const sortBy = function (arr, fn) {
 
 const fn2 = (x) => x;
 
-console.log(sortBy([4, 5, 7, 1, 2, 3], fn2));
+//Easy TikTok problems
+const testCases = {
+  a: [
+    [0, 0],
+    [2, 0],
+    [1, 1],
+    [2, 1],
+    [2, 2],
+  ],
+  b: [
+    [0, 0],
+    [1, 1],
+    [0, 1],
+    [0, 2],
+    [1, 0],
+    [2, 0],
+  ],
+  draw: [
+    [0, 0],
+    [1, 1],
+    [2, 0],
+    [1, 0],
+    [1, 2],
+    [2, 1],
+    [0, 1],
+    [0, 2],
+    [2, 2],
+  ],
+};
+
+const tictactoe = (moves) => {
+  const n = 3;
+  const rows = new Array(n).fill(0);
+  const cols = new Array(n).fill(0);
+  let diag = 0;
+  let anti_diag = 0;
+  let player = 1;
+
+  for (const move of moves) {
+    const row = move[0];
+    const col = move[1];
+
+    rows[row] += player;
+    cols[col] += player;
+
+    if (row === col) {
+      diag += player;
+    }
+    if (row + col === n - 1) {
+      anti_diag += player;
+    }
+
+    if (Math.abs(rows[row]) === n || Math.abs(cols[col]) === n || Math.abs(diag) === n || Math.abs(anti_diag) === n) {
+      return player === 1 ? "A" : "B";
+    }
+
+    player *= -1;
+  }
+
+  return moves.length === n * n ? "Draw" : "Pending";
+};
+
+const findMissingRanges = function (nums, lower, upper) {
+  const ans = [];
+
+  if (!nums.length) {
+    return [[lower, upper]];
+  }
+
+  if (lower < nums[0]) {
+    ans.push([lower, nums[0] - 1]);
+  }
+
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i + 1] > nums[i] + 1) {
+      ans.push([nums[i] + 1, nums[i + 1] - 1]);
+    }
+  }
+
+  if (nums[nums.length - 1] < upper) {
+    ans.push([nums[nums.length - 1] + 1, upper]);
+  }
+
+  return ans;
+};
+
+//Medium - Backtracking
+
+const permute = function (nums) {
+  //use backtracking
+  //need to learn more
+
+  const result = [];
+  backtrack(0, nums, result);
+  return result;
+};
+
+function backtrack(start, nums, result) {
+  if (start === nums.length - 1) {
+    result.push([...nums]);
+    return;
+  }
+
+  for (let i = start; i < nums.length; i++) {
+    [nums[start], nums[i]] = [nums[i], nums[start]];
+    backtrack(start + 1, nums, result);
+    [nums[start], nums[i]] = [nums[i], nums[start]]; //backtrack
+  }
+}
+
+const subsets = function (nums) {
+  //use backtracking
+  const result = [];
+  subsetsBacktrack(0, [], result, nums);
+  return result;
+};
+
+function subsetsBacktrack(start = 0, current = [], result, nums) {
+  result.push([...current]);
+
+  for (let i = start; i < nums.length; i++) {
+    current.push(nums[i]);
+    subsetsBacktrack(i + 1, current, result, nums);
+    current.pop();
+  }
+}
+
+console.log(subsets([1, 2, 3]));
