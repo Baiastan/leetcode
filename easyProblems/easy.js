@@ -399,4 +399,124 @@ function subsetsBacktrack(start = 0, current = [], result, nums) {
   }
 }
 
-console.log(subsets([1, 2, 3]));
+const createObject = (keysArr, valuesArr) => {
+  const obj = {};
+
+  for (let i = 0; i < keysArr.length; i++) {
+    let key = keysArr[i];
+
+    if (typeof key !== "string" && key !== null) {
+      key = key.toString();
+    }
+
+    if (!obj.hasOwnProperty(key)) {
+      obj[key] = valuesArr[i];
+    }
+  }
+
+  return obj;
+};
+
+const cancellable1 = function (fn, args, t) {
+  fn(...args);
+
+  if (t === 0) return () => console.log("time cannot be 0");
+
+  let intervalId = setInterval(() => {
+    fn(...args);
+  }, t);
+
+  return () => clearInterval(intervalId);
+};
+
+// const foo1 = (x) => x * 2;
+
+// const start = performance.now();
+// const result = [];
+
+// const log = (...argsArr) => {
+//   const diff = Math.floor(performance.now() - start);
+//   result.push({ time: diff, returned: foo1(...argsArr) });
+// };
+
+// const cancel = cancellable1(log, [4], 10);
+
+// setTimeout(() => {
+//   cancel();
+// }, 190);
+
+// setTimeout(() => {
+//   console.log(result);
+// }, 190 + 35 + 15);
+
+class Calculator {
+  /**
+   * @param {number} value
+   */
+  constructor(value) {
+    this.result = value;
+  }
+
+  /**
+   * @param {number} value
+   * @return {Calculator}
+   */
+  add(value) {
+    this.result += value;
+
+    return new Calculator(this.result);
+  }
+
+  /**
+   * @param {number} value
+   * @return {Calculator}
+   */
+  subtract(value) {
+    this.result -= value;
+    return new Calculator(this.result);
+  }
+
+  /**
+   * @param {number} value
+   * @return {Calculator}
+   */
+  multiply(value) {
+    this.result *= value;
+    return new Calculator(this.result);
+  }
+
+  /**
+   * @param {number} value
+   * @return {Calculator}
+   */
+  divide(value) {
+    if (value === 0) {
+      console.log("Division by zero is not allowed");
+      return;
+    }
+
+    this.result /= value;
+
+    return new Calculator(this.result);
+  }
+
+  /**
+   * @param {number} value
+   * @return {Calculator}
+   */
+  power(value) {
+    this.result ^= value;
+
+    return new Calculator(this.result);
+  }
+
+  /**
+   * @return {number}
+   */
+  getResult() {
+    console.log(this.result);
+    return new Calculator(this.result);
+  }
+}
+
+const calculator = new Calculator(5);
