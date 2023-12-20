@@ -514,9 +514,314 @@ class Calculator {
    * @return {number}
    */
   getResult() {
-    console.log(this.result);
+    //console.log(this.result);
     return new Calculator(this.result);
   }
 }
 
 const calculator = new Calculator(5);
+
+const isEmpty = (obj) => {
+  const res = JSON.stringify(obj);
+
+  return res.length <= 2 ? true : false;
+  //O(n) - time
+  //O(n) - space
+};
+
+const isEmptyConstant = (obj) => {
+  for (const _ in obj) {
+    return false;
+  }
+
+  return true;
+};
+
+String.prototype.replicate = function (times) {
+  let newStr = "";
+
+  for (let i = 0; i < times; i++) {
+    newStr += this;
+  }
+
+  return newStr;
+  //T O(m * n^2)
+  //S O(m * n)
+};
+
+//recursive solution
+String.prototype.replicate = function (times) {
+  if (times === 0) {
+    return "";
+  }
+
+  return this + this.replicate(times - 1);
+  //T O(m * n^2)
+  //S O(m * n)
+};
+
+//fastest
+String.prototype.replicate = function (times) {
+  const result = [];
+  for (let i = 0; i < times; i++) {
+    result.push(this);
+  }
+
+  return result.join("");
+  //T O(m * n)
+  //S O(m * n)
+};
+
+const str = "js";
+
+const partial = function (fn, args) {
+  return function (...restArgs) {
+    const newArgs = args.map((param) => {
+      if (param === "_") {
+        return restArgs.shift();
+      } else {
+        return param;
+      }
+    });
+
+    return fn(...newArgs, ...restArgs);
+  };
+};
+
+const foo1 = (...args) => args;
+const args1 = [2, 4, 6];
+const restArgs = [2, 10];
+
+const foo2 = (...args) => args;
+const args2 = [1, 2, "_", 4, "_", 6];
+const restArgs2 = [3, 5];
+
+const partialFn = partial(foo2, args2);
+
+const result = partialFn(...restArgs2);
+
+function* factorial(n) {
+  if (n === 0) {
+    yield 1;
+  }
+
+  let fact = 1;
+
+  for (let i = 1; i <= n; i++) {
+    fact *= i;
+    yield fact;
+  }
+}
+
+const factorialRec = (n) => {
+  if (n === 1 || n === 0) {
+    return 1;
+  } else {
+    return n * factorialRec(n - 1);
+  }
+};
+
+function* factorialMemo(n) {
+  const memo = {};
+
+  function recursiveFactorial(n) {
+    if (memo.hasOwnProperty(n)) {
+      return memo[n];
+    }
+    let result;
+    if (n <= 1) {
+      result = 1;
+    } else {
+      result = n * recursiveFactorial(n - 1);
+    }
+
+    memo[n] = result;
+    return result;
+  }
+
+  if (n === 0) {
+    yield 1;
+  } else {
+    for (let i = 1; i <= n; i++) {
+      yield recursiveFactorial(i);
+    }
+  }
+}
+
+const fibGenerator1 = function* () {
+  let [prev, curr] = [0, 1];
+  while (true) {
+    yield prev;
+    [prev, curr] = [curr, prev + curr];
+  }
+};
+
+const gen = fibGenerator1();
+
+gen.next().value;
+gen.next().value;
+gen.next().value;
+gen.next().value;
+
+// Array.prototype.forEach = function (callback, context) {
+//   for (let i = 0; i < this.length; i++) {
+//     const bindedCb = callback.bind(context, this[i], i, this);
+//     bindedCb();
+//   }
+// };
+
+// Array.prototype.forEach = function (callback, context) {
+//   const self = this;
+//   function forEachRecursive(index) {
+//     if (index === self.length) {
+//       return;
+//     }
+//     callback.call(context, self[index], index, self);
+//     forEachRecursive(index + 1);
+//   }
+
+//   forEachRecursive(0);
+// };
+
+// function cb(val, i, arr) {
+//   arr[i] = this.num;
+
+//   return arr[i];
+// }
+// const context = {
+//   num: 5,
+//   num1: 10,
+// };
+// const arr = [1, 2, 3];
+
+// arr.forEach(cb, context);
+
+// console.log(arr);
+
+const functions = [
+  () => new Promise((resolve) => setTimeout(resolve(100), 30)),
+  () => new Promise((resolve) => setTimeout(resolve(300), 40)),
+];
+const ms = 5000;
+
+const delayAll = function (functions, ms) {
+  const newFunctions = [];
+
+  functions.forEach((fn) => {
+    const newFuncWithPromise = () => {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          async function getResult() {
+            try {
+              const res = await fn();
+              resolve(res);
+            } catch (err) {
+              reject(err);
+            }
+          }
+          getResult();
+        }, ms);
+      });
+    };
+
+    newFunctions.push(newFuncWithPromise);
+  });
+
+  return newFunctions;
+};
+
+// const delayedFns = delayAll(functions, ms);
+
+// delayedFns.forEach(async (fn) => {
+//   const res = await fn();
+//   console.log(res);
+// });
+
+// Promise.all(functions.map((func) => func()))
+//   .then((results) => {
+//     console.log(results);
+//   })
+//   .catch((error) => {
+//     console.log(error);
+//   });
+
+// Promise.race(functions.map((func) => func())).then((result) => console.log(result));
+
+const invertObject = (obj) => {
+  const invertedObj = {};
+
+  if (Array.isArray(obj)) {
+    for (let i = 0; i < obj.length; i++) {
+      let key = i + "";
+      if (!invertedObj.hasOwnProperty(obj[key])) {
+        invertedObj[obj[key]] = key;
+      } else {
+        invertedObj[obj[key]] = [...invertedObj[obj[key]], key];
+      }
+    }
+  } else {
+    for (const key in obj) {
+      if (!invertedObj.hasOwnProperty(obj[key])) {
+        invertedObj[obj[key]] = key;
+      } else {
+        invertedObj[obj[key]] = [...invertedObj[obj[key]], key];
+      }
+    }
+  }
+
+  return invertedObj;
+};
+
+const testObj = { a: "1", b: "2", c: "2", d: "4" };
+const arr = ["0", "0", "0", "1", "1", "1"];
+
+// console.log(invertObject(arr));
+
+const memoize = (fn) => {
+  const memo = {};
+
+  return function (...args) {
+    const key = args.join("#");
+    if (memo.hasOwnProperty(key)) {
+      return memo[key];
+    }
+
+    let result = fn(...args);
+    memo[key] = result;
+    return result;
+  };
+};
+
+const memoizeMap = (fn) => {
+  const memo = new Map();
+
+  return function (...args) {
+    const key = JSON.stringify(args);
+    if (memo.has(key)) {
+      return memo.get(key);
+    }
+
+    const result = fn(...args);
+    memo.set(key, result);
+    return result;
+  };
+};
+
+const res = [101, 1].join("#");
+const res1 = [10, 11].join("#");
+
+// console.log(res);
+// console.log(res1);
+
+const curry = function (fn) {
+  return function curried(...args) {};
+};
+const fn3 = (a, b, c) => {
+  return a + b + c;
+};
+
+const curriedSum = curry(fn3);
+
+const res3 = curriedSum(1, 2, 3, 10);
+
+console.log(res3);
