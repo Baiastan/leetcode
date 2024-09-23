@@ -1,0 +1,95 @@
+Chapter 4: Functions for the journeyman: understanding function invocation
+
+A Function constructor enables us to create functions from dynamically created strings.
+For example: new Function('a', 'b', 'return a + b');
+On the other hand, constructor functions are functions that we use to create and initialize object instances.
+Example:
+
+1.  function Ninja() {
+    this.skulk = function() {
+    return this;
+    };
+    }
+
+    var ninja1 = new Ninja();
+    var ninja2 = new Ninja();
+
+2.  function Ninja() {
+    this.skulk = function () {
+    return true;
+    };
+
+    return 1;
+    }
+    assert(Ninja() === 1,
+    "Return value honored when not called as a constructor");
+
+var ninja = new Ninja();
+
+3.  var puppet = {
+    rules: false,
+    };
+
+    function Emperor() {
+    this.rules = true;
+    return puppet;
+    }
+
+    var emperor = new Emperor();
+
+IMPORTANT NOTES on Function Constructors
+
+- If the constructor returns an object, that object is returned as the value of the whole new expression, and the newly constructed object passed as this to the constructor is discarded.
+- If, however, a nonobject is returned from the constructor, the returned value is ignored, and the newly created object is returned.
+
+apply and call methods of functions
+
+To invoke a function by apply method, we pass two parameters to apply: the object to be used as the function context, and array of values to be used as the invocation arguments.
+
+The call method is used in a similar manner, except that the arguments are passed directly in the arguments list rather than as an array
+
+Example:
+function juggle() {
+var result = 0;
+for (var n = 0; n < arguments.length; n++) {
+result += arguments[n];
+}
+this.result = result;
+}
+
+    var ninja1 = {};
+    var ninja2 = {};
+
+    juggle.apply(ninja1,[1,2,3,4]);
+    juggle.call(ninja2, 5,6,7,8);
+
+    assert(ninja1.result === 10, "juggled via apply");
+    assert(ninja2.result === 26, "juggled via call");
+
+Arrow functions dont have their own context. Instead, the context is inherited from the function in which they're defined. The this parameter in our arrow function callback refers to the bottom object.
+Example:
+function Button() {
+this.clicked = false;
+this.click = () => {
+this.clicked = true;
+assert(button.clicked, "The button has been clicked");
+}
+}
+var button = new Button();
+var elem = document.getElementById("test");
+elem.addEventListener("click", button.click);
+
+If an arrow function is defined within an object literal that's defined in global code, the value of the this parameter associated with the arrow function is the global window object. (if it is in the context of browser)
+
+var button = {
+clicked: false,
+click: () => {
+this.clicked = true;
+assert(button.clicked,"The button has been clicked");
+assert(this == window, "In arrow function this == window");
+assert(window.clicked, "clicked is stored in window");
+}
+}
+
+    var elem = document.getElementById("test");
+    elem.addEventListener("click", button.click);

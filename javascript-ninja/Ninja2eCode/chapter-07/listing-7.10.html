@@ -1,35 +1,36 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>Fixing the constructor property</title>
-		<link rel="stylesheet" href="../assert.css">
-		<script src="../assert.js"></script>
-	</head>
-	<body>
-		<script>
-			"use strict";
-			
-			function Person(){}
-			Person.prototype.dance = function(){};
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixing the constructor property</title>
+    <link rel="stylesheet" href="../assert.css" />
+    <script src="../assert.js"></script>
+  </head>
+  <body>
+    <script>
+      "use strict";
 
-			function Ninja(){}
-			Ninja.prototype = new Person();
+      function Person() {}
+      Person.prototype.dance = function () {};
 
-			Object.defineProperty(Ninja.prototype, "constructor", {
-			  enumerable: false,
-			  value: Ninja,
-			  writable: true
-			});
+      function Ninja() {}
+      Ninja.prototype = new Person();
 
-			const ninja = new Ninja();
+      Object.defineProperty(Ninja.prototype, "constructor", {
+        enumerable: false,
+        value: Ninja,
+        writable: true,
+      });
 
-			assert(ninja.constructor === Ninja,
-			      "Connection from ninja instances to Ninja constructor reestablished!");
+      const ninja = new Ninja();
 
-			for(let prop in Ninja.prototype){
-			  assert(prop === "dance", "The only enumerable property is dance!");
-			}
-		</script>
-	</body>
+      assert(ninja.constructor === Ninja, "Connection from ninja instances to Ninja constructor reestablished!");
+
+      for (let prop in Ninja.prototype) {
+        assert(prop === "dance", "The only enumerable property is dance!");
+      }
+
+      console.log(ninja);
+    </script>
+  </body>
 </html>

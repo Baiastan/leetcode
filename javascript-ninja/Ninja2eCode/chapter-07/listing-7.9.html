@@ -1,31 +1,38 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>Configuring properties</title>
-		<link rel="stylesheet" href="../assert.css">
-		<script src="../assert.js"></script>
-	</head>
-	<body>
-		<script>
-			"use strict";
-			
-			const ninja = {};
-			ninja.name = "Yoshi";
-			ninja.weapon = "kusarigama";
+  <head>
+    <meta charset="utf-8" />
+    <title>Configuring properties</title>
+    <link rel="stylesheet" href="../assert.css" />
+    <script src="../assert.js"></script>
+  </head>
+  <body>
+    <script>
+      "use strict";
 
-			Object.defineProperty(ninja, "sneaky", {
-			  configurable: false,
-			  enumerable: false,
-			  value: true,
-			  writable: true
-			});
+      const ninja = {};
+      ninja.name = "Yoshi";
+      ninja.weapon = "kusarigama";
 
-			assert("sneaky" in ninja, "We can access the new property");
+      Object.defineProperty(ninja, "sneaky", {
+        configurable: false,
+        enumerable: false,
+        value: "hello",
+        writable: true,
+      });
 
-			for(let prop in ninja){
-			  assert(prop !== undefined, "An enumerated property: " + prop);
-			}
-		</script>
-	</body>
+      Object.defineProperty(ninja, "name", {
+        enumerable: true,
+      });
+
+      assert("sneaky" in ninja, "We can access the new property");
+
+      console.log(ninja);
+
+      for (let prop in ninja) {
+        assert(prop !== undefined, "An enumerated property: " + prop);
+        console.log(prop);
+      }
+    </script>
+  </body>
 </html>

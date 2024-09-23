@@ -1,43 +1,42 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>A closer look at promise order of execution</title>
-		<link rel="stylesheet" href="../assert.css">
-		<script src="../assert.js"></script>
-	</head>
-	<body>
-		<script>
-			"use script";
-			
-			report("At code start");
+  <head>
+    <meta charset="utf-8" />
+    <title>A closer look at promise order of execution</title>
+    <link rel="stylesheet" href="../assert.css" />
+    <script src="../assert.js"></script>
+  </head>
+  <body>
+    <script>
+      "use script";
 
-			const ninjaDelayedPromise = new Promise((resolve, reject) => {
-			  report("ninjaDelayedPromise executor");
-			  setTimeout(() => {
-			    report("Resolving ninjaDelayedPromise");
-			    resolve("Hatori");
-			  }, 500);
-			});
+      report("At code start");
+      
 
-			assert(ninjaDelayedPromise !== null, "After creating ninjaDelayedPromise");
+      const ninjaDelayedPromise = new Promise((resolve, reject) => {
+        report("ninjaDelayedPromise executor");
+        setTimeout(() => {
+          report("Resolving ninjaDelayedPromise");
+          resolve("Hatori");
+        }, 500);
+      });
 
-			ninjaDelayedPromise.then(ninja => {
-			  assert(ninja === "Hatori",
-			        "ninjaDelayedPromise resolve handled with Hatori");
-			});
+      assert(ninjaDelayedPromise !== null, "After creating ninjaDelayedPromise");
 
-			const ninjaImmediatePromise = new Promise((resolve, reject) => {
-			  report("ninjaImmediatePromise executor. Immediate resolve.");
-			  resolve("Yoshi");
-			});
+      ninjaDelayedPromise.then((ninja) => {
+        assert(ninja === "Hatori", "ninjaDelayedPromise resolve handled with Hatori");
+      });
 
-			ninjaImmediatePromise.then(ninja => {
-			  assert(ninja === "Yoshi",
-			   	    "ninjaImmediatePromise resolve handled with Yoshi");
-			});
+      const ninjaImmediatePromise = new Promise((resolve, reject) => {
+        report("ninjaImmediatePromise executor. Immediate resolve.");
+        resolve("Yoshi");
+      });
 
-			report("At code end");
-		</script>
-	</body>
+      ninjaImmediatePromise.then((ninja) => {
+        assert(ninja === "Yoshi", "ninjaImmediatePromise resolve handled with Yoshi");
+      });
+
+      report("At code end");
+    </script>
+  </body>
 </html>

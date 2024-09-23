@@ -1,29 +1,47 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>Using yield* to generate to another generator</title>
-		<link rel="stylesheet" href="../assert.css">
-		<script src="../assert.js"></script>
-	</head>
-	<body>
-		<script>
-			"use strict";
-			
-			function* WarriorGenerator(){
-			  yield "Sun Tzu";
-			  yield* NinjaGenerator();
-			  yield "Genghis Khan";
-			}
+  <head>
+    <meta charset="utf-8" />
+    <title>Using yield* to generate to another generator</title>
+    <link rel="stylesheet" href="../assert.css" />
+    <script src="../assert.js"></script>
+  </head>
+  <body>
+    <script>
+      "use strict";
 
-			function* NinjaGenerator(){
-			  yield "Hatori";
-			  yield "Yoshi";
-			}
+      function* WarriorGenerator() {
+        yield "Sun Tzu";
+        yield* NinjaGenerator();
+        yield "Genghis Khan";
+      }
 
-			for(let warrior of WarriorGenerator()){
-			  assert(warrior !== null, warrior);
-			}
-		</script>
-	</body>
+      function* NinjaGenerator() {
+        yield "Hatori";
+        yield "Yoshi";
+      }
+
+      for (let warrior of WarriorGenerator()) {
+        assert(warrior !== null, warrior);
+      }
+
+      function* idGenerator(prefixId) {
+        let id = 1;
+        while (true) {
+          yield `${prefixId}-${id++}`;
+        }
+      }
+
+      const idGen = idGenerator("ninja");
+
+      let ids = {};
+
+      for (let i = 0; i < 10; i++) {
+        let id = idGen.next().value;
+        ids[i] = id;
+      }
+
+      console.log(ids);
+    </script>
+  </body>
 </html>

@@ -1,27 +1,75 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Building a foreach function to demonstrate setting a function context</title>
-  <meta charset="utf-8">
-  <script src="../assert.js"></script>
-  <link rel="stylesheet" type="text/css" href="../assert.css">
-</head>
-<body>
-  <script>
-    function forEach(list, callback) {
-      for (var n = 0; n < list.length; n++) {
-        callback.call(list[n], n);
+  <head>
+    <title>Building a foreach function to demonstrate setting a function context</title>
+    <meta charset="utf-8" />
+    <script src="../assert.js"></script>
+    <link rel="stylesheet" type="text/css" href="../assert.css" />
+  </head>
+  <body>
+    <script>
+      function sum(...args) {
+        let sum = 0;
+        for (let i = 0; i < args.length; i++) {
+          sum += args[i];
+        }
+
+        return sum;
       }
-    }
 
-    var weapons = [{ type:'shuriken'}, 
-                   { type:'katana'},
-                   { type:'nunchucks'}];
+      function getSamurai(samurai) {
+        "use strict";
+        arguments[0] = "Ishiba";
+        return samurai;
+      }
 
-    forEach(weapons, function(index){
-        assert(this === weapons[index],
-              "Got the expected object of " + weapons[index].type);
-    });
-  </script>
-</body>
+      function whoAmI() {
+        "use strict";
+        return this;
+      }
+
+      // const ninja1 = {
+      //   whoAmI: function () {
+      //     return this;
+      //   },
+      // };
+
+      // const ninja2 = {
+      //   whoAmI: ninja1.whoAmI,
+      // };
+
+      // const identity = ninja2.whoAmI;
+
+      // console.log(ninja1.whoAmI() === ninja1);
+      // console.log(ninja2.whoAmI() === ninja2);
+
+      // console.log(identity() === window);
+      // console.log(ninja1.whoAmI.call(ninja2) === ninja2);
+
+      // function Ninja() {
+      //   this.whoAmI = () => this;
+      // }
+      // const ninja3 = new Ninja();
+      // const ninja4 = {
+      //   whoAmI: ninja3.whoAmI,
+      // };
+
+      // console.log(ninja3.whoAmI() === ninja3); //true
+      // console.log(ninja4.whoAmI() === ninja4); //false
+
+      function Ninja() {
+        this.whoAmI = function () {
+          return this;
+        }.bind(this);
+      }
+
+      const ninja1 = new Ninja();
+      const ninja2 = {
+        whoAmI: ninja1.whoAmI,
+      };
+
+      console.log(ninja1.whoAmI() === ninja1); //true
+      console.log(ninja2.whoAmI() === ninja2); //false
+    </script>
+  </body>
 </html>

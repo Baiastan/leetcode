@@ -1,48 +1,63 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>Speed comparison proxied arrays vs standard array</title>
-		<link rel="stylesheet" href="../assert.css">
-		<script src="../assert.js"></script>
-	</head>
-	<body>
-		<script>
-		function createNegativeArrayProxy(array){
-		  if (!Array.isArray(array)) {
-		    throw new TypeError('Expected an array');
-		  }
-		  
-		  return new Proxy(array, {
-		    get: (target, index) => {
-		      index = +index;		    	
-		      return target[index < 0 ? target.length + index : index];
-		    },
-		    set: (target, index, val) => {
-		     index = +index;
-		     return target[index < 0 ? target.length + index : index] = val;
-		    }
-		  });
-		}
+  <head>
+    <meta charset="utf-8" />
+    <title>Speed comparison proxied arrays vs standard array</title>
+    <link rel="stylesheet" href="../assert.css" />
+    <script src="../assert.js"></script>
+  </head>
+  <body>
+    <script>
+      function createNegativeArrayProxy(array) {
+        if (!Array.isArray(array)) {
+          throw new TypeError("Expected an array");
+        }
 
-		function measure(items){
-			const startTime = new Date().getTime();
+        return new Proxy(array, {
+          get: (target, index) => {
+            index = +index;
+            return target[index < 0 ? target.length + index : index];
+          },
+          set: (target, index, val) => {
+            index = +index;
+            return (target[index < 0 ? target.length + index : index] = val);
+          },
+        });
+      }
 
-			for(let i = 0; i < 500000; i++){
-				items[0] === "Yoshi";
-				items[1] === "Kuma";
-				items[2] === "Hattori";
-			}
+      function measure(items) {
+        const startTime = new Date().getTime();
 
-			return new Date().getTime() - startTime;
-		}
+        for (let i = 0; i < 500000; i++) {
+          items[0] === "Yoshi";
+          items[1] === "Kuma";
+          items[2] === "Hattori";
+        }
 
-		const ninjas = ["Yoshi", "Kuma", "Hattori"];
-		const proxiedNinjas = createNegativeArrayProxy(ninjas);
+        return new Date().getTime() - startTime;
+      }
 
-		console.log("Proxies are around",
-							  Math.round(measure(proxiedNinjas)/measure(ninjas)),
-								"times slower");
-		</script>
-	</body>
+      const ninjas = ["Yoshi", "Kuma", "Hattori"];
+      const proxiedNinjas = createNegativeArrayProxy(ninjas);
+
+      //   console.log("Proxies are around", Math.round(measure(proxiedNinjas) / measure(ninjas)), "times slower");
+
+      const ninja = {
+        get name() {
+          return "Baiastan";
+        },
+      };
+
+      function Samurai() {
+        const _waepon = "katana";
+        Object.defineProperty(this, "weapon", {
+          get: () => _waepon,
+        });
+      }
+
+      const samurai = new Samurai();
+
+      console.log(samurai.weapon);
+    </script>
+  </body>
 </html>

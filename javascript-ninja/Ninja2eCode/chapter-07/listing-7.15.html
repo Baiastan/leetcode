@@ -1,49 +1,127 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>ES6 Inheritance</title>
-		<link rel="stylesheet" href="../assert.css">
-		<script src="../assert.js"></script>
-	</head>
-	<body>
-		<script>
-			"use strict"
-			class Person {
-			  constructor(name){
-			    this.name = name;
-			  }
+  <head>
+    <meta charset="utf-8" />
+    <title>ES6 Inheritance</title>
+    <link rel="stylesheet" href="../assert.css" />
+    <script src="../assert.js"></script>
+  </head>
+  <body>
+    <script>
+      "use strict";
+      class Person {
+        constructor(name) {
+          this.name = name;
+        }
 
-			  dance(){
-			    return true;
-			  }
-			}
+        dance() {
+          return true;
+        }
+      }
 
-			class Ninja extends Person {
-			  construct(name, weapon){
-			  	//super(name); //Uncomment this line of code when super gets supported.
-			    this.weapon = weapon;
-			  }
+      class Ninja extends Person {
+        construct(name, weapon) {
+          //super(name); //Uncomment this line of code when super gets supported.
+          this.weapon = weapon;
+        }
 
-			  wieldWeapon(){
-			    return true;
-			  }
-			}
+        wieldWeapon() {
+          return true;
+        }
+      }
 
-			const person = new Person("Bob");
+      const person = new Person("Bob");
 
-			assert(person instanceof Person, "A person’s a person");
-			assert(person.dance(), "A person can dance.");
-			assert(person.name === "Bob", "We can call it by name.");
-			assert(!(person instanceof Ninja), "But it’s not a Ninja");
-			assert(typeof person.wieldWeapon === "undefined", "And it cannot wield a weapon");
+      assert(person instanceof Person, "A person’s a person");
+      assert(person.dance(), "A person can dance.");
+      assert(person.name === "Bob", "We can call it by name.");
+      assert(!(person instanceof Ninja), "But it’s not a Ninja");
+      assert(typeof person.wieldWeapon === "undefined", "And it cannot wield a weapon");
 
-			const ninja = new Ninja("Yoshi", "Wakizashi");
-			assert(ninja instanceof Ninja, "A ninja’s a ninja");
-			assert(ninja.wieldWeapon(), "That can wield a weapon");
-			assert(ninja instanceof Person, "But it’s also a person");
-			assert(ninja.name === "Yoshi" , "That has a name");
-			assert(ninja.dance(), "And enjoys dancing");
-		</script>
-	</body>
+      const ninja = new Ninja("Yoshi", "Wakizashi");
+      assert(ninja instanceof Ninja, "A ninja’s a ninja");
+      assert(ninja.wieldWeapon(), "That can wield a weapon");
+      assert(ninja instanceof Person, "But it’s also a person");
+      assert(ninja.name === "Yoshi", "That has a name");
+      assert(ninja.dance(), "And enjoys dancing");
+
+      //excercises
+      function Car() {}
+
+      Car.prototype.drive = function () {
+        return "Drive";
+      };
+
+      Car.message = "Hello";
+
+      const bmw = new Car();
+      const a1 = bmw.drive(); // Drive
+      const a2 = bmw.message; // undefined
+
+      function Person1(firstName, lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+      }
+
+      function Person2(firstName, lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+      }
+
+      Person2.prototype.getFullName = function () {
+        return this.firstName + " " + this.lastName;
+      };
+
+      Person1.prototype = new Person2();
+
+      Object.defineProperty(Person1.prototype, "constructor", {
+        enumerable: false,
+        value: Person1,
+        writable: true,
+      });
+
+      const person1 = new Person1("Baiastn", "Zhuzupbekov");
+      const person2 = new Person2("Aisuluu", "Kydyralieva");
+
+      //   console.log(person1);
+
+      //   console.log(person1.getFullName());
+      //   console.log(person2.getFullName());
+
+      class Warrior {
+        constructor(weapon) {
+          this.weapon = weapon;
+        }
+
+        wield() {
+          return "Wielding " + this.weapon;
+        }
+
+        static duel(warrior1, warrior2) {
+          return warrior1.wield() + " " + warrior2.wield();
+        }
+      }
+
+      function Warrior1(weapon) {
+        this.weapon = weapon;
+      }
+
+      Warrior1.prototype.wield = function () {
+        return "Wielding " + this.weapon;
+      };
+
+      Warrior1.duel = function (war1, war2) {
+        return war1.wield() + " " + war2.wield();
+      };
+
+      const warrior = new Warrior1("sword");
+      const warrior1 = new Warrior1("stick");
+
+      console.log(warrior.wield());
+
+      console.log(Warrior1.duel(warrior, warrior1));
+
+      console.log(Warrior.duel(warrior, warrior1));
+    </script>
+  </body>
 </html>

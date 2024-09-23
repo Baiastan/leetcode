@@ -1,48 +1,106 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Combining generators and promises</title>
-		<meta charset="utf-8">
-		<link rel="stylesheet" href="../assert.css">
-		<script src="../assert.js"></script>
-		<script src="getJSON.js"></script>
-		<script>
-		 "use strict"
-			async(function*(){
-			  try {
-			    const ninjas = yield getJSON("data/ninjas.json");
-			    const missions = yield getJSON(ninjas[0].missionsUrl);
-			    const missionDescription = yield getJSON(missions[0].detailsUrl);
+  <head>
+    <title>Combining generators and promises</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../assert.css" />
+    <script src="../assert.js"></script>
+    <script src="getJSON.js"></script>
+    <script>
+      "use strict";
+      //   fetch(function* () {
+      //     try {
+      //       const ninjas = yield getJSON("data/ninjas.json");
+      //       const missions = yield getJSON(ninjas[0].missionsUrl);
+      //       const missionDescription = yield getJSON(missions[0].detailsUrl);
 
-				assert(ninjas !== null && missions !== null 
-					&& missionDescription !== null, 
-					"All ready!");
-			  }
-			  catch(e) {
-				fail("We weren't able to get mission details");
-			  }
-			});
+      //       assert(ninjas !== null && missions !== null && missionDescription !== null, "All ready!");
+      //     } catch (e) {
+      //       fail("We weren't able to get mission details");
+      //     }
+      //   });
 
-			function async(generator) {
-				const iterator = generator();
+      //   function fetch(generator) {
+      //     const iterator = generator();
 
-				function handle(iteratorResult) {
-			    	if(iteratorResult.done) { return; }
+      //     function handle(iteratorResult) {
+      //       if (iteratorResult.done) {
+      //         return;
+      //       }
 
-			    	const iteratorValue = iteratorResult.value;
+      //       const iteratorValue = iteratorResult.value;
 
-			    	if(iteratorValue instanceof Promise) {
-						iteratorValue.then(res => handle(iterator.next(res)))
-									 .catch(err => iterator.throw(err))
-			    	}
-				}
+      //       if (iteratorValue instanceof Promise) {
+      //         iteratorValue.then((res) => handle(iterator.next(res))).catch((err) => iterator.throw(err));
+      //       }
+      //     }
 
-				try {
-			    	handle(iterator.next());
-			  	}
-			  	catch (e) { iterator.throw(e); }
-			}
-		</script>
-	</head>
-	<body>Has to be run on a server (e.g MAMP or WAMP)</body>
+      //     try {
+      //       handle(iterator.next());
+      //     } catch (e) {
+      //       iterator.throw(e);
+      //     }
+      //   }
+
+      //excercises
+
+      const EvenGenerator = function* () {
+        let num = 2;
+
+        while (true) {
+          yield num;
+          num = num + 2;
+        }
+      };
+
+      let generator = EvenGenerator();
+      console.log(generator.next().value); // 2
+      console.log(generator.next().value); // 4
+      console.log(EvenGenerator().next().value); //2 different execution context
+      console.log(generator.next().value); //6
+
+      const NinjaGenerator = function* () {
+        yield "Yoshi";
+        return "Hattori"; // done: true
+        yield "Hanzo";
+      };
+
+      const ninjas = [];
+
+      const iterator = NinjaGenerator();
+
+      for (const ninja of NinjaGenerator()) {
+        ninjas.push(ninja);
+      }
+
+      console.log(ninjas); // ['Yoshi']
+
+      function* Gen(val) {
+        val = yield val * 2;
+        yield val;
+      }
+
+      let gen = Gen(2);
+
+      let a1 = gen.next(3).value; // 2 * 2 = 4
+      let a2 = gen.next(4).value; // 4
+      console.log(a1);
+      console.log(a2);
+
+      const promise = new Promise((res, rej) => {
+        res("Resolved");
+      });
+
+      promise.then((res) => console.log(res)).catch((err) => console.log(err));
+
+      const promise1 = new Promise((res, rej) => {
+        setTimeout(() => rej("Rejected"), 1000);
+      });
+
+      promise1.then((res) => console.log(res)).catch((err) => console.log(err));
+    </script>
+  </head>
+  <body>
+    Has to be run on a server (e.g MAMP or WAMP)
+  </body>
 </html>

@@ -3,53 +3,97 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Css crashcourse</title>
+    <title>Semantic HTML</title>
     <link rel="stylesheet" href="index.css" />
-  </head>
-  <body>
-    <button id="openModal">Open modal</button>
-
-    <div id="animation">Animation</div>
-
-    <!-- <div class="modal-back-drop hidden">
-      <div class="modal">
-        <div class="modal_header">
-          <h2>This is a modal header</h2>
-        </div>
-        <div class="modal_body">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aspernatur reiciendis dolorum natus corrupti saepe
-          iusto, explicabo, nostrum culpa odio voluptatibus illum aliquam eveniet corporis deserunt eaque eos nam.
-          Vitae, in.
-        </div>
-        <div class="modal_footer">
-          <button id="closeButton">Ok</button>
-        </div>
-      </div>
-    </div> -->
-
-    <script>
-      const modalBackDrop = document.querySelector(".modal-back-drop");
-      const modalContent = document.querySelector(".modal");
-      const openModal = document.getElementById("openModal");
-      const closeButton = document.getElementById("closeButton");
-
-      function closeModal() {
-        modalBackDrop.classList.remove("active");
-        setTimeout(() => {
-          modalBackDrop.classList.add("hidden");
-        }, 500);
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      .container {
+        text-align: center;
+        border: solid 5px #808080;
+        font-size: 20px;
+        background-color: #ffa500;
       }
 
-      modalContent.addEventListener("click", (event) => {
-        event.stopPropagation();
-      });
-      modalBackDrop.addEventListener("click", closeModal);
-      closeButton.addEventListener("click", closeModal);
-      openModal.addEventListener("click", () => {
-        modalBackDrop.classList.add("active");
-        modalBackDrop.classList.remove("hidden");
-      });
-    </script>
+      .header {
+        background-color: #d3d3d3;
+        border: solid 5px #808080;
+        text-align: center;
+        padding: 0px 10px 5px 10px;
+        margin: 10px;
+      }
+
+      .nav {
+        border: solid 5px #808080;
+        text-align: center;
+        margin: 0px;
+      }
+
+      .wrapper {
+        background-color: #d3d3d3;
+        border: solid 5px #808080;
+        margin: 10px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      main {
+        display: flex;
+        background-color: #d3d3d3;
+        border: solid 5px #808080;
+        margin: 10px;
+        height: 150px;
+      }
+
+      article {
+        flex: auto;
+      }
+
+      .sidebar {
+        background-color: #d3d3d3;
+        border: solid 5px #808080;
+        margin: 10px;
+        min-width: 400px;
+      }
+
+      .sub-content {
+        background-color: #d3d3d3;
+        border: solid 2px #808080;
+        margin: 10px;
+      }
+
+      .footer {
+        background-color: #d3d3d3;
+        border: solid 5px #808080;
+        text-align: center;
+        padding: 5px;
+        margin: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      Container
+      <header class="header">
+        Header
+        <nav class="nav">Nav</nav>
+      </header>
+      <div class="wrapper">
+        <h1>Wrapper</h1>
+        <main class="content">
+          <article>
+            Content
+            <div class="sub-content">Sub Content 1</div>
+            <div class="sub-content">Sub Content 2</div>
+          </article>
+
+          <aside class="sidebar">Sidebar</aside>
+        </main>
+      </div>
+      <footer class="footer">Footer Hellooo</footer>
+    </div>
   </body>
 </html>

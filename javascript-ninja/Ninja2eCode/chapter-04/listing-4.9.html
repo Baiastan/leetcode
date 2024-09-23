@@ -1,28 +1,36 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Constructors explicitly returning object values</title>
-  <meta charset="utf-8">
-  <script src="../assert.js"></script>
-  <link rel="stylesheet" type="text/css" href="../assert.css">
-</head>
-<body>
-	<script>
-    var puppet = {
-      rules: false
-    };
+  <head>
+    <title>Constructors explicitly returning object values</title>
+    <meta charset="utf-8" />
+    <script src="../assert.js"></script>
+    <link rel="stylesheet" type="text/css" href="../assert.css" />
+  </head>
+  <body>
+    <script>
+      var puppet = {
+        rules: false,
+      };
 
-    function Emperor() {
-      this.rules = true;
-      return puppet;
-    }
+      function Emperor(name) {
+        this.rules = true;
+        this.name = name;
 
-    var emperor = new Emperor();
+        this.add = function () {
+          console.log(this.name);
+        };
 
-    assert(emperor === puppet,
-      "The emperor is merely a puppet!");
-    assert(emperor.rules === false,
-      "The puppet does not know how to rule!");
-	</script>
-</body>
+        return this;
+      }
+
+      var emperor = new Emperor("Baiastan");
+      emperor.add();
+
+      assert(emperor === puppet, "The emperor is merely a puppet!");
+      assert(emperor.rules === false, "The puppet does not know how to rule!");
+
+      console.log(emperor);
+      console.log(emperor.rules);
+    </script>
+  </body>
 </html>

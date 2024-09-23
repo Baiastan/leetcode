@@ -1,23 +1,120 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>Difference of sets</title>
-		<link rel="stylesheet" href="../assert.css">
-		<script src="../assert.js"></script>
-	</head>
-	<body>
-		<script>
-			const ninjas = new Set(["Kuma", "Hattori", "Yagyu"]);
-			const samurai = new Set(["Hattori", "Oda", "Tomoe"]);
+  <head>
+    <meta charset="utf-8" />
+    <title>Difference of sets</title>
+    <link rel="stylesheet" href="../assert.css" />
+    <script src="../assert.js"></script>
+  </head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
 
-			const pureNinjas = new Set(
-			  [...ninjas].filter(ninja => !samurai.has(ninja))
-			);
+    #backdrop {
+      background-color: rgba(180, 178, 178, 0.5);
+      width: 100%;
+      height: 100%;
+      z-index: 100;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+    }
 
-			assert(pureNinjas.size === 2, "There’s only one ninja samurai");
-			assert(pureNinjas.has("Kuma"), "Kuma is a true ninja");
-			assert(pureNinjas.has("Yagyu"), "Yagyu is a true ninja");
-		</script>
-	</body>
+    #backdrop.visible {
+      display: flex;
+    }
+
+    .modal {
+      width: 300px;
+      height: 200px;
+      background-color: white;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+    }
+    #stopwatch {
+      margin: 20px;
+      border: 1px solid grey;
+      background-color: grey;
+      width: 200px;
+      height: 200px;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+    }
+  </style>
+  <body>
+    <div id="stopwatch">
+      <div>
+        <h1>Stopwatch</h1>
+        <div id="timer" role="timer">00:00:0000</div>
+        <button id="start-button">Start</button>
+        <button id="stop-button" disabled>Stop</button>
+        <button id="reset-button" disabled>Reset</button>
+      </div>
+    </div>
+    <script>
+      // Write your code here.
+      let intervalId;
+      let lastTimerStartTime = 0;
+      let millisElapsedBeforeLastStart = 0;
+      const start = document.getElementById("start-button");
+      const stop = document.getElementById("stop-button");
+      const reset = document.getElementById("reset-button");
+      const timer = document.getElementById("timer");
+
+      start.addEventListener("click", () => {
+        lastTimerStartTime = Date.now();
+        stop.disabled = false;
+        start.disabled = true;
+        reset.disabled = true;
+        intervalId = setInterval(() => {
+          updateTimer();
+        }, 1000 / 60);
+      });
+
+      stop.addEventListener("click", () => {
+        reset.disabled = false;
+        start.disabled = false;
+        stop.disabled = true;
+        millisElapsedBeforeLastStart += Date.now() - lastTimerStartTime;
+        clearInterval(intervalId);
+      });
+
+      reset.addEventListener("click", () => {
+        reset.disabled = true;
+        stop.disabled = true;
+        millisElapsedBeforeLastStart = 0;
+        timer.innerText = "00:00:000";
+      });
+
+      function updateTimer() {
+        const milisElapsed = Date.now() - lastTimerStartTime + millisElapsedBeforeLastStart;
+        const secondsElapsed = milisElapsed / 1000;
+        const minutesElapsed = secondsElapsed / 60;
+
+        const millisText = formatNumber(milisElapsed % 1000, 3);
+        const secondsText = formatNumber(Math.floor(secondsElapsed % 60), 2);
+        const minutesText = formatNumber(Math.floor(minutesElapsed), 2);
+
+        timer.textContent = `${minutesText}:${secondsText}:${millisText}`;
+      }
+
+      function formatNumber(number, desiredLength) {
+        const stringNumber = String(number);
+
+        if (stringNumber.length > desiredLength) {
+          return stringNumber.slice(0, desiredLength);
+        }
+
+        return stringNumber.padStart(desiredLength, "0");
+      }
+    </script>
+  </body>
 </html>

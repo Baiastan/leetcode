@@ -237,8 +237,6 @@ Person.prototype = {
 
 const baiastan = new Person("Baiastan");
 
-console.log(baiastan.__proto__);
-
 //Generators
 
 function* genNumbers(count) {
@@ -255,8 +253,6 @@ function* genNumber1(count) {
 }
 
 const gen = genNumber1(5);
-
-console.log(gen.return(5));
 
 // console.log(gen.throw(new Error("There was an error")));
 
@@ -278,3 +274,207 @@ function* getNumbers2() {
   yield* generator1();
   yield* generator2();
 }
+
+// JavaScript problems
+const flattenArray = (array) => {
+  return array.reduce((acc, curr) => acc.concat(flatten(curr)), []);
+};
+
+const flattenObject = (obj) => {
+  const flattenedObj = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+    const valueIsObject = typeof value === "object" && value !== null && !Array.isArray(value);
+    const flattenedValue = flatten(value);
+
+    if (valueIsObject) {
+      Object.assign(flattenedObj, flattenedValue);
+    } else {
+      flattenedObj[key] = flattenedValue;
+    }
+  }
+  return flattenedObj;
+};
+
+function flatten(value) {
+  if (typeof value !== "object" || value === null) {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return flattenArray(value);
+  }
+
+  return flattenObject(value);
+}
+
+const testArr = [1, 2, 3, 4, [5], 8];
+
+const testObj = { a: 1, b: { c: 2, d: 3, e: { f: 4 } } };
+const testObjArr = [{ a: [1, 2, [3, 4]] }];
+
+// console.log(flatten(testObjArr));
+
+// console.log(flattenArray(testArr));
+// console.log(flattenObject(testObj));'
+const obj1 = {
+  values: "coming from from obj1",
+};
+
+const foo1 = function (a, b) {
+  return a + b;
+};
+
+Function.prototype.myCall = function (thisContext, ...args) {
+  const fnSymbol = Symbol();
+
+  thisContext[fnSymbol] = this;
+
+  const result = thisContext[fnSymbol](...args);
+
+  delete thisContext[fnSymbol];
+
+  return result;
+};
+
+Function.prototype.myBind = function (thisContext, ...initialArgs) {
+  const fnSymbol = Symbol();
+  const fnToBind = this;
+
+  return function boundFunction(...moreArgs) {
+    const combinedArgs = initialArgs.concat(moreArgs);
+
+    thisContext[fnSymbol] = fnToBind;
+
+    const result = thisContext[fnSymbol](...combinedArgs);
+
+    delete thisContext[fnSymbol];
+
+    return result;
+  };
+};
+
+Function.prototype.myApply = function (thisContext, args = []) {
+  const fnSymbol = Symbol();
+
+  thisContext[fnSymbol] = this;
+
+  console.log(thisContext.values);
+
+  const result = thisContext[fnSymbol](...args);
+
+  delete thisContext[fnSymbol];
+
+  return result;
+};
+
+// const f = foo1.myApply(obj1, [1, 3, 3, 4]);
+
+// console.log(f);
+
+Promise.myAll = function (promises) {
+  return new Promise((resolve, reject) => {
+    const results = [];
+    let resolvedCount = 0;
+
+    promises.forEach((promise, i) => {
+      promise
+        .then((value) => {
+          results[i] = value;
+          resolvedCount++;
+          if (resolvedCount === promises.length) {
+            resolve(results);
+          }
+        })
+        .catch(reject);
+    });
+  });
+};
+
+Promise.myRace = function (promises) {
+  return new Promise((resolve, reject) => {
+    promises.forEach((promise) => {
+      promise.then(resolve).catch(reject);
+    });
+  });
+};
+
+Promise.myAny = function (promises) {
+  return new Promise((resolve, reject) => {
+    let rejectedCount = 0;
+    promises.forEach((promise) => {
+      promise.then(resolve).catch((_) => {
+        rejectedCount++;
+        if (rejectedCount === promises.length) {
+          reject("All promises rejected");
+        }
+      });
+    });
+  });
+};
+
+Promise.myAllSettled = function (promises) {
+  return new Promise((resolve) => {
+    let allCount = 0;
+    const results = [];
+
+    promises.forEach((promise, i) => {
+      promise
+        .then((res) => {
+          results[i] = { status: "fulfilled", value: res };
+        })
+        .catch((error) => {
+          results[i] = { status: "rejected", error };
+        })
+        .finally(() => {
+          allCount++;
+          if (allCount === promises.length) {
+            resolve(results);
+          }
+        });
+    });
+  });
+};
+
+// Promise.myAllSettled([
+//   new Promise((res) => setTimeout(() => res(0), 500)),
+//   Promise.reject(5),
+//   new Promise((res) => setTimeout(() => res(10), 1000)),
+// ])
+//   .then((res) => console.log(res))
+//   .catch((error) => console.log("error " + error));
+
+const memoize = (callback, resolver) => {
+  const cache = new Map();
+  function getCacheKey(args) {
+    return resolver != null ? resolver(...args) : JSON.stringify(args);
+  }
+
+  const memoized = function (...args) {
+    const cacheKey = getCacheKey(args);
+
+    if (cache.has(cacheKey)) {
+      return cache.get(cacheKey);
+    }
+
+    const output = callback(...args);
+    cache.set(cacheKey, output);
+    return output;
+  };
+
+  memoized.clear = () => {
+    cache.clear();
+  };
+
+  memoized.delete = (...args) => {
+    const cacheKey = getCacheKey(args);
+    cache.delete(cacheKey);
+  };
+
+  memoized.has = (...args) => {
+    const cacheKey = getCacheKey(args);
+    return cache.has(cacheKey);
+  };
+
+  return memoized;
+};

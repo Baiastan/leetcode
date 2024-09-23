@@ -1,0 +1,17 @@
+{
+  "folders": [
+	{
+		"path": "Desktop/JavaScript/leetcode"
+	},
+	{
+		"path": "leetcode"
+	}
+],
+  "settings": {
+    "editor.tokenColorCustomizations": {
+      "comments": "#66a157"
+    }
+  }
+}
+
+// hello world
