@@ -572,7 +572,7 @@ const nums = [3, 1, 3, 4, 2];
 
 const findDuplicate = (nums) => {
   //25% runtime
-  //22 memory
+  //22 cache
   //Time O(n)
   //Space O(n)
   const obj = {};
@@ -588,7 +588,7 @@ const findDuplicate = (nums) => {
 
 const findDuplicateF = (nums) => {
   //65% runtime
-  //96% memory
+  //96% cache
   //Time O(n)
   //Space O(1)
   while (nums[0] != nums[nums[0]]) {
@@ -601,3 +601,358 @@ const findDuplicateF = (nums) => {
 };
 
 findDuplicateF(nums);
+
+/// currying
+
+const compose = (f, g) => (x) => f(g(x));
+
+const double = (x) => x * 2;
+const square = (x) => x * x;
+
+const doubleThenSquare = compose(square, double);
+
+const result = doubleThenSquare(5);
+
+const curry = function (fn) {
+  return function curried(...args) {
+    if (args.length >= fn.length) {
+      return fn(...args);
+    }
+
+    return function (...nextArgs) {
+      return curried(...args, ...nextArgs);
+    };
+  };
+};
+
+const fn3 = (a, b, c) => {
+  return a + b + c;
+};
+
+const curriedSum = curry(fn3);
+
+const res3 = curriedSum(1, 2)(4);
+
+const array1 = [
+  { id: "1", name: "Baia" },
+  { id: "1", name: "Baia" },
+  { id: "2", name: "Naza" },
+];
+
+const array2 = [
+  [1, 2, 3],
+  [1, 2, 5],
+  [1, 5, 9],
+];
+
+const array3 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const foo4 = function (item) {
+  return item.name;
+};
+
+const foo5 = function (list) {
+  return String(list[1]);
+};
+
+const foo6 = function (n) {
+  return String(n > 5);
+};
+
+Array.prototype.groupBy = function (fn) {
+  const returnObject = {};
+  for (const item of this) {
+    const key = fn(item);
+    if (key in returnObject) {
+      returnObject[key].push(item);
+    } else {
+      returnObject[key] = [item];
+    }
+  }
+  return returnObject;
+};
+
+Array.prototype.groupByRec = function (fn) {
+  if (this.length === 0) {
+    return {};
+  }
+
+  const ans = {};
+  let index = 0;
+  const recursiveFunc = function (arr, el) {
+    if (index === arr.length) {
+      return;
+    }
+    const groupBy = fn(el);
+
+    if (ans.hasOwnProperty(groupBy)) {
+      ans[groupBy].push(el);
+    } else {
+      ans[groupBy] = [el];
+    }
+    index++;
+    return recursiveFunc(arr, arr[index]);
+  };
+
+  recursiveFunc(this, this[0]);
+
+  return ans;
+};
+
+const arr5 = [{}, [], 1, 2, 3, true, false, null, {}, [1, 2, 3], "hi", 1, 2, 3];
+
+const foo12 = (item) => {
+  return typeof item;
+};
+
+const arr7 = [[1], [1], [1], [2], [2], [2], [1, 2]];
+const foo7 = (list) => {
+  return String(list.length);
+};
+
+const res = arr5.groupByRec(foo12);
+
+const debounce = function (fn, t) {
+  let timerId;
+
+  return function (...args) {
+    //we dont have to check, because calling clearTimeout on undefined timerId will do nothing
+
+    clearTimeout(timerId);
+    timerId = setTimeout(() => {
+      return fn(...args);
+    }, t);
+  };
+};
+
+// const foo13 = (a, b, c) => {
+//   console.log("Will be exucuted with delayed time", a, b, c);
+// };
+
+// const debouncedFunc = debounce(foo13, 150);
+
+// setTimeout(() => {
+//   debouncedFunc(1, 2, 3);
+// }, 50);
+
+// setTimeout(() => {
+//   debouncedFunc(4, 5, 6);
+// }, 300);
+
+// setTimeout(() => {
+//   debouncedFunc(5, 5, 6);
+// }, 300);
+
+const jsonStringify = function (object) {
+  //console.log(JSON.stringify(object));
+  if (object === null) {
+    return "null";
+  }
+
+  if (Array.isArray(object)) {
+    const elements = object.map((el) => jsonStringify(el));
+    return `[${elements.join(",")}]`;
+  }
+
+  if (typeof object === "object") {
+    const keys = Object.keys(object);
+
+    const keyValuePairs = keys.map((key) => {
+      return `"${key}":${jsonStringify(object[key])}`;
+    });
+
+    return `{${keyValuePairs.join(",")}}`;
+  }
+
+  if (typeof object === "string") {
+    return `"${object}"`;
+  }
+
+  return String(object);
+};
+
+const obj = { key: { a: 1, b: [{}, null, "Hello"] } };
+
+// console.log(jsonStringify(obj));
+
+const fnAsync = async (n) => {
+  await new Promise((res) => setTimeout(res, 2000));
+  return n * n;
+};
+
+const errorFn = () => {
+  throw "Error";
+};
+
+const t = 1000;
+
+const timeLimit = (fn, t) => {
+  return async function (...args) {
+    return new Promise(async (resolve, reject) => {
+      setTimeout(() => {
+        reject("Time Limit Exceeded");
+      }, t);
+
+      try {
+        const res = await fn(...args);
+        resolve(res);
+      } catch (err) {
+        reject(err);
+      }
+    });
+  };
+};
+
+const limited = timeLimit(errorFn, t);
+
+let result1;
+
+try {
+  const res = await limited(5);
+  result1 = { resolved: res };
+} catch (err) {
+  result1 = { rejected: err };
+}
+
+// console.log(result1);
+
+// ---LRU (Least recently used)Cache Implementation
+
+class LRUCache {
+  constructor(capacity) {
+    this.map = new Map();
+    this.capacity = capacity;
+  }
+
+  get(key) {
+    if (this.map.has(key)) {
+      let val = this.map.get(key);
+      this.map.delete(key);
+      this.map.set(key, val);
+      return val;
+    }
+    return -1;
+  }
+
+  put(key, value) {
+    if (this.get(key) === -1) {
+      if (this.capacity === this.map.size) {
+        for (let keyVal of this.map) {
+          this.map.delete(keyVal[0]);
+          break;
+        }
+      }
+    }
+
+    this.map.set(key, value);
+  }
+
+  getMemory() {
+    return this.map;
+  }
+}
+
+// const cache = new LRUCache(4);
+
+// cache.put("1", "BMW");
+// cache.put("2", "Lexus");
+// cache.put("3", "Toytoa");
+// cache.put("4", "Ford");
+
+// setTimeout(() => {
+//   cache.get("1");
+// }, 500);
+
+// setTimeout(() => {
+//   cache.get("2");
+
+//   cache.getMemory();
+// }, 1000);
+
+// setTimeout(() => {
+//   cache.get("4");
+// }, 2000);
+
+// setTimeout(() => {
+//   cache.put("5", "Ford Mustang");
+// }, 3000);
+
+// cache.getMemory();
+
+class DoublyLinkedList {
+  constructor(key, value) {
+    this.key = key;
+    this.value = value;
+    this.prev = null;
+    this.next = null;
+  }
+}
+
+class LRUCacheDoublyLinkedList {
+  constructor(capacity) {
+    this.capacity = capacity;
+    this.map = new Map();
+    this.head = new DoublyLinkedList(null, null);
+    this.tail = new DoublyLinkedList(null, null);
+    this.head.next = this.tail;
+    this.tail.prev = this.head;
+  }
+
+  get(key) {
+    if (this.map.has(key)) {
+      const node = this.map.get(key);
+      this.remove(node);
+      this.add(node);
+      return node.value.value;
+    }
+    return -1;
+  }
+
+  put(key, value) {
+    if (this.map.has(key)) {
+      this.remove(this.map.get(key));
+    } else if (this.map.size === this.capacity) {
+      this.map.delete(this.tail.prev.key);
+      this.remove(this.tail.prev);
+    }
+    const newNode = new DoublyLinkedList(key, value);
+    this.add(newNode);
+    this.map.set(key, newNode);
+  }
+
+  add(node) {
+    const headNext = this.head.next;
+    this.head.next = node;
+    node.prev = this.head;
+    node.next = headNext;
+    headNext.prev = node;
+  }
+
+  remove(node) {
+    const prevNode = node.prev;
+    const nextNode = node.next;
+    prevNode.next = nextNode;
+    nextNode.prev = prevNode;
+  }
+
+  printCache() {
+    console.log(this.head.next);
+  }
+}
+
+const cache = new LRUCacheDoublyLinkedList(3);
+
+// cache.put("1", "BMW");
+// cache.put("2", "Lexus");
+// cache.put("3", "Toytoa");
+// cache.get("1");
+// cache.get("2");
+
+// cache.printCache();
+
+class BinaryTree {
+  constructor(val, left = null, right = null) {
+    this.left = left;
+    this.right = right;
+    this.val = val;
+  }
+}

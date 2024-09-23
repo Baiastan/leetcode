@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Semantic HTML</title>
+    <link rel="stylesheet" href="index.css" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      .container {
+        text-align: center;
+        border: solid 5px #808080;
+        font-size: 20px;
+        background-color: #ffa500;
+      }
+
+      .header {
+        background-color: #d3d3d3;
+        border: solid 5px #808080;
+        text-align: center;
+        padding: 0px 10px 5px 10px;
+        margin: 10px;
+      }
+
+      .nav {
+        border: solid 5px #808080;
+        text-align: center;
+        margin: 0px;
+      }
+
+      .wrapper {
+        background-color: #d3d3d3;
+        border: solid 5px #808080;
+        margin: 10px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      main {
+        display: flex;
+        background-color: #d3d3d3;
+        border: solid 5px #808080;
+        margin: 10px;
+        height: 150px;
+      }
+
+      article {
+        flex: auto;
+      }
+
+      .sidebar {
+        background-color: #d3d3d3;
+        border: solid 5px #808080;
+        margin: 10px;
+        min-width: 400px;
+      }
+
+      .sub-content {
+        background-color: #d3d3d3;
+        border: solid 2px #808080;
+        margin: 10px;
+      }
+
+      .footer {
+        background-color: #d3d3d3;
+        border: solid 5px #808080;
+        text-align: center;
+        padding: 5px;
+        margin: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      Container
+      <header class="header">
+        Header
+        <nav class="nav">Nav</nav>
+      </header>
+      <div class="wrapper">
+        <h1>Wrapper</h1>
+        <main class="content">
+          <article>
+            Content
+            <div class="sub-content">Sub Content 1</div>
+            <div class="sub-content">Sub Content 2</div>
+          </article>
+
+          <aside class="sidebar">Sidebar</aside>
+        </main>
+      </div>
+      <footer class="footer">Footer Hellooo</footer>
+    </div>
+  </body>
+</html>

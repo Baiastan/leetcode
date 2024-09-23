@@ -1,0 +1,85 @@
+Performance Optimization
+
+0.  Manage JavaScript bundle
+
+    Manage the JavaScript bundle size.
+    The performance of websites with large JavaScript bundles can be impeded because
+    it takes longer for users to download the bundle to their devices and decompress, parse, and execute the bundle.
+
+    How to detect performance issues related to bundle size
+    Tools like WebPageTest or Chrome's Lighthouse dev tool can be used to audit a page
+    and view a performance analysis report that includes identified issues and
+    opportunities to improve them.
+
+    How To reduce bundle size
+
+    First, analyze what's in the bundle using tools like webpack-bundle-analyzer to determine which component/module/library contributes the most to the final bundle. Alterntively, use Chrome's Coverage dev tool to identify the unused code of a bundle in the current page.
+
+1.  Tree Shaking
+    Tree shaking us a form of dead code elimination. The term tree shaking comes from the mental model of your application and its dependendcies as a tree-like structure. Each node in the tree represents a dependency that provides disnstict funtionality for your app. In modern apps, these dependencies are brought in via static import statements like so:
+
+            // Import all the array utilities!
+            import arrayUtils from "array-utils";
+
+                When an app is young—a sapling, if you will—it may have few dependencies. It's also using most—if not all—the dependencies you add. As your app matures, however, more dependencies can get added. To compound matters, older dependencies fall out of use, but may not get pruned from your codebase. The end result is that an app ends up shipping with a lot of unused JavaScript. Tree shaking addresses this by taking advantage of how static import statements pull in specific parts of ES6 modules:
+
+        // Import only some of the utilities!
+
+    import { unique, implode, explode } from "array-utils";
+
+The difference between this import example and the previous one is that rather than importing everything from the "array-utils" module—which could be a lot of code)—this example imports only specific parts of it. In dev builds, this doesn't change anything, as the entire module gets imported regardless. In production builds, webpack can be configured to "shake" off exports from ES6 modules that weren't explicitly imported, making those production builds smaller. In this guide, you'll learn how to do just that!
+
+2. Splitting code and lazy loading chunks of code as needed for the page.
+   Most web pages and applications are made up of many different parts. Instead of sending all the JavaScript that makes up the application as soon as the first page is loaded, splitting the JavaScript into multiple chunks improves page performance.
+
+   A few files need to be modified to only import the single method from lodash. To begin with, replace this dependency in package.json:
+
+"lodash": "^4.7.0",
+with this:
+
+"lodash.sortby": "^4.7.0",
+Now in src/index.js, import this specific module:
+
+import "./style.css";
+import \_ from "lodash";
+import sortBy from "lodash.sortby";
+
+With the use of dynamic imports, a secondary chunk can be lazy loaded, or loaded on demand. In this application, the code that makes up the chunk can be loaded only when the user presses the button.
+
+Begin by removing the top-level import for the sort method in src/index.js:
+import sortBy from "lodash.sortby";
+
+And import it within the event listener that fires when the button is pressed:
+
+form.addEventListener("submit", e => {
+e.preventDefault();
+import('lodash.sortby')
+.then(module => module.default)
+.then(sortInput())
+.catch(err => { alert(err) });
+});
+
+Conclusion
+Code splitting and lazy loading can be extremely useful techniques to trim down the initial bundle size of your application, and this can directly result in much faster page load times. However, there are some important things that need to be considered before including this optimization in your application.
+
+Lazy loading UI
+When lazy loading specific modules of code, it's important to consider how the experience would be for users with weaker network connections. Splitting and loading a very large chunk of code when a user submits an action can make it seem like the application may have stopped working, so consider showing a loading indicator of some sort.
+
+Lazy loading third-party node modules
+It is not always the best approach to lazy load third-party dependencies in your application and it depends on where you use them. Usually, third party dependencies are split into a separate vendor bundle that can be cached since they don't update as often. Read more about how the SplitChunksPlugin can help you do this.
+
+Lazy loading with a JavaScript framework
+Many popular frameworks and libraries that use webpack provide abstractions to make lazy loading easier than using dynamic imports in the middle of your application.
+
+Lazy loading modules with Angular
+Code splitting with React Router
+Lazy loading with Vue Router
+Although it is useful to understand how dynamic imports work, always use the method recommended by your framework/library to lazy load specific modules.
+
+Preloading and prefetching
+Where possible, take advantage of browser hints such as <link rel="preload"> or <link rel="prefetch"> to try and load critical modules even sooner. webpack supports both hints through the use of magic comments in import statements. This is explained in more detail in the Preload critical chunks guide.
+
+Lazy loading more than code
+Images can make up a significant part of an application. Lazy loading those that are below the fold, or outside the device viewport, can speed up a website. Read more about this in the Lazysizes guide.
+
+3. Splitting a big bundle into smaller chunks and making use of HTTP/2's capability to load those chunks in parallel

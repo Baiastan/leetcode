@@ -1,0 +1,8 @@
+Overcoming Localization Challenges for International Expansions
+
+
+
+Currency: Displaying the Japanese Yen and calculating its value in our backend systems 
+Addresses: Configuring Japanese address fields, which are fundamentally different from those in the US  
+Honorifics: Adding the ability to show honorifics, a culturally important aspect of Japanese society  
+Dates: Showing the year first in the date, similar to much of the world, but different than the standard date format in the US
