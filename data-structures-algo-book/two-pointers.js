@@ -914,11 +914,3 @@ const minMeetingRooms = (intervals) => {
   }
   return usedRooms;
 };
-
-console.log(
-  minMeetingRooms([
-    [0, 30],
-    [5, 10],
-    [15, 20],
-  ])
-);
