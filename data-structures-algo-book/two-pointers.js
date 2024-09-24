@@ -895,3 +895,30 @@ const wordDistance = new WordDistance(["practice", "makes", "perfect", "coding",
 //console.log(wordDistance.shortest("coding", "practice"));
 
 console.log(wordDistance.shortest("makes", "coding"));
+
+const minMeetingRooms = (intervals) => {
+  const startTimes = intervals.map((el) => el[0]);
+  const endTimes = intervals.map((el) => el[1]);
+
+  startTimes.sort((a, b) => a - b);
+  endTimes.sort((a, b) => a - b);
+
+  let usedRooms = 0;
+
+  for (let start = 0, end = 0; start < intervals.length; start++) {
+    if (startTimes[start] < endTimes[end]) {
+      usedRooms++;
+    } else {
+      end++;
+    }
+  }
+  return usedRooms;
+};
+
+console.log(
+  minMeetingRooms([
+    [0, 30],
+    [5, 10],
+    [15, 20],
+  ])
+);
