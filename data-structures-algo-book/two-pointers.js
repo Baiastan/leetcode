@@ -914,3 +914,57 @@ const minMeetingRooms = (intervals) => {
   }
   return usedRooms;
 };
+
+const threeSumSmaller = (nums, target) => {
+  //worst solution but works
+  //now we need to optimize it lol
+  //currently T O(n^3)
+  let counter = 0;
+  let arr = [];
+
+  for (let i = 0; i < nums.length - 2; i++) {
+    for (let j = i + 1; j < nums.length - 1; j++) {
+      for (let k = j + 1; k < nums.length; k++) {
+        if (i < j < k < nums.length && nums[i] + nums[j] + nums[k] < target) {
+          counter++;
+          arr.push([nums[i], nums[j], nums[k]]);
+        }
+      }
+    }
+  }
+
+  return counter;
+};
+
+const threeSumSmallerOptimized = (nums, target) => {
+  nums.sort((a, b) => a - b);
+
+  function twoSumSmaller(nums, startIndex, target) {
+    let sum = 0;
+    let left = startIndex;
+    let right = nums.length - 1;
+
+    while (left < right) {
+      if (nums[left] + nums[right] < target) {
+        sum += right - left;
+        left++;
+      } else {
+        right--;
+      }
+    }
+
+    return sum;
+  }
+
+  let sum = 0;
+
+  for (let i = 0; i < nums.length - 2; i++) {
+    sum += twoSumSmaller(nums, i + 1, target - nums[i]);
+  }
+
+  return sum;
+
+  //return counter;
+};
+
+console.log(threeSumSmallerOptimized([-2, 0, 1, 3], 2));
