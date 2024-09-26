@@ -967,4 +967,50 @@ const threeSumSmallerOptimized = (nums, target) => {
   //return counter;
 };
 
-console.log(threeSumSmallerOptimized([-2, 0, 1, 3], 2));
+// console.log(threeSumSmallerOptimized([-2, 0, 1, 3], 2));
+
+const sortTransformedArray = (nums, a, b, c) => {
+  //f(x) = ax^2 + bx + c
+  function transform(x) {
+    return a * Math.pow(x, 2) + b * x + c;
+  }
+  const answer = [];
+
+  let left = 0;
+  let right = nums.length - 1;
+
+  if (a < 0) {
+    while (left <= right) {
+      // When 'downward parabola' we will put the edge element (smaller elements) first.
+      const leftY = transform(nums[left]);
+      const rightY = transform(nums[right]);
+      if (leftY < rightY) {
+        answer.push(leftY);
+        left++;
+      } else {
+        answer.push(rightY);
+        right--;
+      }
+    }
+  } else {
+    while (left <= right) {
+      // When 'upward parabola' or a 'straight line'
+      // we will put the edge element (bigger elements) first.
+      const leftY = transform(nums[left], a, b, c);
+      const rightY = transform(nums[right], a, b, c);
+      if (leftY > rightY) {
+        answer.push(leftY);
+        left++;
+      } else {
+        answer.push(rightY);
+        right--;
+      }
+    }
+
+    answer.reverse();
+  }
+
+  return answer;
+};
+
+// console.log(sortTransformedArray([-4, -2, 2, 4], 1, 3, 5));
