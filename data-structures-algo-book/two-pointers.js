@@ -64,18 +64,18 @@ const hasCycleTwoPointers = (head) => {
 
 const isPalindrome = (head) => {
   let old_tail = head;
-  let arr = [];
+  let set = [];
 
   while (old_tail !== null) {
-    arr.push(old_tail.val);
+    set.push(old_tail.val);
 
     old_tail = old_tail.next;
   }
 
-  let j = arr.length - 1;
+  let j = set.length - 1;
   let i = 0;
   while (i < j) {
-    if (arr[i] !== arr[j]) {
+    if (set[i] !== set[j]) {
       return false;
     }
 
@@ -86,9 +86,9 @@ const isPalindrome = (head) => {
   return true;
 };
 
-const arr = [1, 2, 2, 1];
+const set = [1, 2, 2, 1];
 
-// const head = createLinkedList(arr);
+// const head = createLinkedList(set);
 
 // console.log(isPalindrome(head));
 
@@ -460,19 +460,19 @@ const twoSumLessThanK = (nums, k) => {
 
 // console.log(twoSumLessThanK([34, 23, 1, 24, 75, 33, 54, 8], 60));
 
-const duplicateZeros = (arr) => {
+const duplicateZeros = (set) => {
   const newArr = [];
 
-  for (let i = 0; i < arr.length; i++) {
-    newArr.push(arr[i]);
-    if (arr[i] === 0) {
+  for (let i = 0; i < set.length; i++) {
+    newArr.push(set[i]);
+    if (set[i] === 0) {
       newArr.push(0);
     }
 
-    arr[i] = newArr[i];
+    set[i] = newArr[i];
   }
 
-  console.log(arr);
+  console.log(set);
 };
 
 // console.log(duplicateZeros([1, 2, 3]));
@@ -513,17 +513,17 @@ const removePalindromSub = (s) => {
 
 // console.log(removePalindromSub("ababa"));
 
-const checkIfExist = (arr) => {
+const checkIfExist = (set) => {
   const sums = new Map();
 
   let i = 0;
-  for (const n of arr) {
+  for (const n of set) {
     sums.set(n * 2, i);
     i++;
   }
 
-  for (let i = 0; i < arr.length; i++) {
-    if (sums.has(arr[i]) && sums.get(arr[i]) !== i) {
+  for (let i = 0; i < set.length; i++) {
+    if (sums.has(set[i]) && sums.get(set[i]) !== i) {
       return true;
     }
   }
@@ -851,15 +851,15 @@ const reverseWordsInPlace = (s) => {
 // console.log(reverseWordsInPlace(["t", "h", "e", " ", "s", "k", "y", " ", "i", "s", " ", "b", "l", "u", "e"]));
 
 class WordDistance {
-  constructor(arr) {
-    this.arr = arr;
+  constructor(set) {
+    this.set = set;
     this.map = new Map();
 
-    for (let i = 0; i < arr.length; i++) {
-      if (!this.map.has(arr[i])) {
-        this.map.set(arr[i], []);
+    for (let i = 0; i < set.length; i++) {
+      if (!this.map.has(set[i])) {
+        this.map.set(set[i], []);
       }
-      this.map.get(arr[i]).push(i);
+      this.map.get(set[i]).push(i);
     }
   }
 
@@ -920,14 +920,14 @@ const threeSumSmaller = (nums, target) => {
   //now we need to optimize it lol
   //currently T O(n^3)
   let counter = 0;
-  let arr = [];
+  let set = [];
 
   for (let i = 0; i < nums.length - 2; i++) {
     for (let j = i + 1; j < nums.length - 1; j++) {
       for (let k = j + 1; k < nums.length; k++) {
         if (i < j < k < nums.length && nums[i] + nums[j] + nums[k] < target) {
           counter++;
-          arr.push([nums[i], nums[j], nums[k]]);
+          set.push([nums[i], nums[j], nums[k]]);
         }
       }
     }
@@ -1013,4 +1013,439 @@ const sortTransformedArray = (nums, a, b, c) => {
   return answer;
 };
 
-// console.log(sortTransformedArray([-4, -2, 2, 4], 1, 3, 5));
+const compress = (chars) => {
+  if (chars.length === 1) return chars;
+  let s = "";
+  let sum = 0;
+
+  for (let i = 1; i < chars.length; i++) {
+    let ch1 = chars[i - 1];
+    let ch2 = chars[i];
+
+    let counter = 0;
+
+    if (ch1 === ch2) {
+      while (ch1 === ch2) {
+        ch1 = chars[i - 1];
+        ch2 = chars[i];
+        counter++;
+        i++;
+      }
+
+      s += ch1 + counter;
+      sum += counter;
+      i--;
+    } else {
+      s += ch1;
+      sum += 1;
+    }
+  }
+
+  let i = 0;
+
+  chars.splice(s.length, sum - s.length);
+
+  for (let ch of s) {
+    chars[i] = ch;
+    i++;
+  }
+
+  return chars;
+};
+
+// console.log(compress(["a", "b", "b", "b", "b", "b", "b", "b", "b", "b", "b", "b", "b"]));
+
+const findLongestWord = (s, dictionary) => {
+  let longestWord = "";
+
+  let index = 0;
+  for (let word of dictionary) {
+    let i = 0;
+    let j = 0;
+    let computedWord = "";
+
+    while (i < s.length && j < word.length) {
+      let sLetter = s[i];
+      let dictLetter = word[j];
+
+      if (i < s.length && j < word.length && sLetter === dictLetter) {
+        computedWord += sLetter;
+
+        i++;
+        j++;
+      } else {
+        i++;
+      }
+      if (computedWord === word) {
+        break;
+      }
+    }
+
+    if (computedWord === word) {
+      if (word.length > longestWord.length || (word.length === longestWord.length && word < longestWord)) {
+        longestWord = word;
+      }
+    }
+    index++;
+  }
+
+  return longestWord;
+};
+
+const swapNodes = (head, k) => {
+  let current = head;
+  let frontNode = null;
+
+  let endNode = null;
+
+  let length = 0;
+  let i = 1;
+
+  while (current !== null) {
+    length++;
+
+    if (endNode !== null) {
+      endNode = endNode.next;
+    }
+
+    if (length === k) {
+      frontNode = current;
+      endNode = head;
+    }
+
+    current = current.next;
+  }
+
+  let temp = frontNode.val;
+  frontNode.val = endNode.val;
+  endNode.val = temp;
+  return head;
+};
+
+// const head1 = createLinkedList([26, 24, 24, 36, 18, 52, 95, 61, 54, 88, 86, 79, 11, 1, 31, 100]);
+
+// const head2 = swapNodes(head1, 16);
+
+// printLinkedList(head2);
+
+const findPairs = (nums, k) => {
+  //Tc O(n);
+  //Sc O(n);
+  const map = new Map();
+
+  let i = 0;
+  for (const num of nums) {
+    const comp = num + k;
+
+    map.set(comp, i);
+    i++;
+  }
+
+  let count = 0;
+
+  const set = new Set();
+
+  for (let i = 0; i < nums.length; i++) {
+    if (map.has(nums[i]) && !set.has(nums[i])) {
+      count++;
+
+      set.add(nums[i]);
+    }
+  }
+
+  return count;
+};
+
+// console.log(findPairs([1, 2, 4, 4, 3, 3, 0, 9, 2, 3], 3));
+
+const nextGreaterElement = (n) => {
+  const nums = (n + "").split("");
+
+  let i = nums.length - 2;
+
+  // Step 1: Find the first decreasing element
+  while (i >= 0 && nums[i] >= nums[i + 1]) {
+    i--;
+  }
+
+  if (i < 0) return -1; // No next permutation possible
+
+  let j = nums.length - 1;
+
+  // Step 2: Find the smallest number larger than nums[i] from the right
+  while (nums[j] <= nums[i]) {
+    j--;
+  }
+
+  // Step 3: Swap the two numbers
+  let temp = nums[i];
+  nums[i] = nums[j];
+  nums[j] = temp;
+
+  // Step 4: Sort the digits after position i in ascending order
+  let result = nums.slice(0, i + 1).concat(nums.slice(i + 1).reverse());
+
+  let newNum = Number(result.join(""));
+
+  // Step 5: Check if new number fits within 32-bit integer range
+  const INT32_MAX = 2147483647;
+  if (newNum > INT32_MAX) return -1;
+
+  return newNum;
+};
+
+// console.log(nextGreaterElement(230241));
+const sleep = (miliseconds) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, miliseconds);
+  });
+};
+
+async function greeting() {
+  console.log("Hello ");
+  await sleep(2000);
+  console.log("Bye");
+}
+
+// Array.prototype.square = function () {
+//   const set = [];
+//   for (let i = 0; i < this.length; i++) {
+//     set[i] = this[i] * this[i];
+//   }
+
+//   return set;
+// };
+
+const setCancellableInterval = (cb, delay, ...args) => {
+  let intervalId = setInterval(() => {
+    cb(...args);
+  }, delay);
+
+  return () => clearTimeout(intervalId);
+};
+
+const setCancellableTimeout = (callback, delay, ...args) => {
+  let timeoutId = setTimeout(() => {
+    callback(...args);
+  }, delay);
+
+  return () => clearTimeout(timeoutId);
+};
+
+// const cancel = setCancellableInterval(
+//   (a, b) => {
+//     console.log(a + b);
+//   },
+//   1000,
+//   2,
+//   4
+// );
+// cancel();
+
+const chunk = (array, size = 1) => {
+  if (!Array.isArray(array) || size < 1) {
+    return [];
+  }
+  const set = [];
+  let newArr = [];
+  let i = 0;
+  for (const el of array) {
+    newArr.push(el);
+    i++;
+
+    if (i === size) {
+      set.push(newArr);
+      i = 0;
+      newArr = [];
+    }
+  }
+
+  if (newArr.length !== 0) {
+    return [...set, newArr];
+  }
+
+  return set;
+};
+
+// console.log(chunk([1, 2, 3, 4, 5]));
+
+const compact = (set) => {
+  return set.filter((el) => el);
+};
+
+// console.log(compact([0, 1, false, 2, "", 3, null]));
+function difference(array, values) {
+  if (values.length === 0) {
+    return array;
+  }
+
+  const set = new Set(values);
+
+  const result = [];
+  for (let i = 0; i < array.length; i++) {
+    if (!set.has(array[i]) && array[i] !== undefined) {
+      result.push(array[i]);
+    }
+  }
+
+  return result;
+}
+
+// console.log(difference([1, , 3], [1]));
+// function dropRightWhile(array, predicate) {
+//   return array.filter((el, i, set) => !predicate(el, i, set));
+// }
+
+export default function dropRightWhile(array, predicate) {
+  let index = array.length - 1;
+
+  while (index >= 0 && predicate(array[index], index, array)) {
+    index--;
+  }
+
+  return array.slice(0, index + 1);
+}
+
+// console.log(dropRightWhile([1, , 3, 4, 5], (value) => value === undefined));
+
+Array.prototype.myFilter = function (callbackFn, context) {
+  if (this.length === 0 || !this) {
+    return [];
+  }
+
+  const result = [];
+
+  for (let i = 0; i < this.length; i++) {
+    if (this[i] !== undefined && callbackFn.call(context, [this[i]], i, this)) {
+      result.push(this[i]);
+    }
+  }
+
+  return result;
+};
+
+// console.log(
+//   [1, 2, 3, 4].myFilter(
+//     function (el) {
+//       console.log(this);
+
+//       return el % 2 === 0;
+//     },
+//     { name: "Baiastan", number: 2024685645 }
+//   )
+// );
+
+function $(selector) {
+  const buttonEl = document.getSelector(selector);
+
+  buttonEl.css = function (propertyName, property = null) {
+    if (propertyName && !property) {
+      return buttonEl.style[propertyName];
+    }
+
+    buttonEl.style[propertyName] = property;
+
+    return buttonEl;
+  };
+}
+
+// const buttonEl = $("button");
+
+const debounce = (func, wait) => {
+  let timeoutId = null;
+  let context = undefined;
+  let argsToInvoke = undefined;
+
+  function clearTimer() {
+    clearTimeout(timeoutId);
+    timeoutId = null;
+  }
+
+  function invoke() {
+    if (timeoutId == null) {
+      return;
+    }
+
+    clearTimer();
+
+    func.apply(context, argsToInvoke);
+  }
+
+  function fn(...args) {
+    clearTimer();
+    argsToInvoke = args;
+    context = this;
+    timeoutId = setTimeout(function () {
+      invoke();
+    }, wait);
+  }
+
+  fn.cancel = clearTimer;
+
+  fn.flush = invoke;
+
+  return fn;
+};
+
+let i = 0;
+function increment() {
+  i++;
+
+  console.log(i);
+}
+
+const debouncedIncrement = debounce(increment, 3000);
+
+// debouncedIncrement();
+
+// console.log(debouncedIncrement.flush());
+
+const add = (a, b, c) => {
+  return a + b + c;
+};
+
+function curry(fn) {
+  return function curried(...args) {
+    if (args.length >= fn.length) {
+      return fn.apply(this, args);
+    }
+
+    return (arg) => (arg === undefined ? curried.apply(this, args) : curried.apply(this, [...args, arg]));
+  };
+}
+
+// const curriedFunc = curry(add);
+
+// console.log(curriedFunc(3, 4)(6));
+
+const classNames = function (...args) {
+  const set = new Set();
+
+  for (let el of args) {
+    if (typeof el === "object" && !Array.isArray(el) && el != null) {
+      for (let key in el) {
+        if (Boolean(el[key])) {
+          set.add(key);
+        }
+      }
+    } else if (Array.isArray(el)) {
+      for (let item of el) {
+        set.add(classNames(item));
+      }
+    } else if (!!el) {
+      set.add(el);
+    }
+  }
+
+  let arr = [];
+
+  for (let value of set.values()) {
+    arr.push(value);
+  }
+
+  return arr.join(" ");
+};
+
+//console.log(classNames(null, false, "bar", "bar", undefined, 0, 1, { baz: null }, ""));
