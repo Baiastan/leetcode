@@ -1194,258 +1194,47 @@ const nextGreaterElement = (n) => {
   return newNum;
 };
 
-// console.log(nextGreaterElement(230241));
-const sleep = (miliseconds) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, miliseconds);
-  });
-};
-
-async function greeting() {
-  console.log("Hello ");
-  await sleep(2000);
-  console.log("Bye");
-}
-
-// Array.prototype.square = function () {
-//   const set = [];
-//   for (let i = 0; i < this.length; i++) {
-//     set[i] = this[i] * this[i];
-//   }
-
-//   return set;
-// };
-
-const setCancellableInterval = (cb, delay, ...args) => {
-  let intervalId = setInterval(() => {
-    cb(...args);
-  }, delay);
-
-  return () => clearTimeout(intervalId);
-};
-
-const setCancellableTimeout = (callback, delay, ...args) => {
-  let timeoutId = setTimeout(() => {
-    callback(...args);
-  }, delay);
-
-  return () => clearTimeout(timeoutId);
-};
-
-// const cancel = setCancellableInterval(
-//   (a, b) => {
-//     console.log(a + b);
-//   },
-//   1000,
-//   2,
-//   4
-// );
-// cancel();
-
-const chunk = (array, size = 1) => {
-  if (!Array.isArray(array) || size < 1) {
-    return [];
+const checkInclusion = (s1, s2) => {
+  //TLE Error
+  if (s2.length < s1.length) {
+    return false;
   }
-  const set = [];
-  let newArr = [];
-  let i = 0;
-  for (const el of array) {
-    newArr.push(el);
-    i++;
 
-    if (i === size) {
-      set.push(newArr);
-      i = 0;
-      newArr = [];
+  const s1map = {};
+
+  for (let el of s1) {
+    if (s1map[el]) {
+      s1map[el]++;
+    } else {
+      s1map[el] = 1;
     }
   }
 
-  if (newArr.length !== 0) {
-    return [...set, newArr];
-  }
+  for (let i = 0; i < s2.length; i++) {
+    const s2map = {};
 
-  return set;
-};
-
-// console.log(chunk([1, 2, 3, 4, 5]));
-
-const compact = (set) => {
-  return set.filter((el) => el);
-};
-
-// console.log(compact([0, 1, false, 2, "", 3, null]));
-function difference(array, values) {
-  if (values.length === 0) {
-    return array;
-  }
-
-  const set = new Set(values);
-
-  const result = [];
-  for (let i = 0; i < array.length; i++) {
-    if (!set.has(array[i]) && array[i] !== undefined) {
-      result.push(array[i]);
-    }
-  }
-
-  return result;
-}
-
-// console.log(difference([1, , 3], [1]));
-// function dropRightWhile(array, predicate) {
-//   return array.filter((el, i, set) => !predicate(el, i, set));
-// }
-
-export default function dropRightWhile(array, predicate) {
-  let index = array.length - 1;
-
-  while (index >= 0 && predicate(array[index], index, array)) {
-    index--;
-  }
-
-  return array.slice(0, index + 1);
-}
-
-// console.log(dropRightWhile([1, , 3, 4, 5], (value) => value === undefined));
-
-Array.prototype.myFilter = function (callbackFn, context) {
-  if (this.length === 0 || !this) {
-    return [];
-  }
-
-  const result = [];
-
-  for (let i = 0; i < this.length; i++) {
-    if (this[i] !== undefined && callbackFn.call(context, [this[i]], i, this)) {
-      result.push(this[i]);
-    }
-  }
-
-  return result;
-};
-
-// console.log(
-//   [1, 2, 3, 4].myFilter(
-//     function (el) {
-//       console.log(this);
-
-//       return el % 2 === 0;
-//     },
-//     { name: "Baiastan", number: 2024685645 }
-//   )
-// );
-
-function $(selector) {
-  const buttonEl = document.getSelector(selector);
-
-  buttonEl.css = function (propertyName, property = null) {
-    if (propertyName && !property) {
-      return buttonEl.style[propertyName];
-    }
-
-    buttonEl.style[propertyName] = property;
-
-    return buttonEl;
-  };
-}
-
-// const buttonEl = $("button");
-
-const debounce = (func, wait) => {
-  let timeoutId = null;
-  let context = undefined;
-  let argsToInvoke = undefined;
-
-  function clearTimer() {
-    clearTimeout(timeoutId);
-    timeoutId = null;
-  }
-
-  function invoke() {
-    if (timeoutId == null) {
-      return;
-    }
-
-    clearTimer();
-
-    func.apply(context, argsToInvoke);
-  }
-
-  function fn(...args) {
-    clearTimer();
-    argsToInvoke = args;
-    context = this;
-    timeoutId = setTimeout(function () {
-      invoke();
-    }, wait);
-  }
-
-  fn.cancel = clearTimer;
-
-  fn.flush = invoke;
-
-  return fn;
-};
-
-let i = 0;
-function increment() {
-  i++;
-
-  console.log(i);
-}
-
-const debouncedIncrement = debounce(increment, 3000);
-
-// debouncedIncrement();
-
-// console.log(debouncedIncrement.flush());
-
-const add = (a, b, c) => {
-  return a + b + c;
-};
-
-function curry(fn) {
-  return function curried(...args) {
-    if (args.length >= fn.length) {
-      return fn.apply(this, args);
-    }
-
-    return (arg) => (arg === undefined ? curried.apply(this, args) : curried.apply(this, [...args, arg]));
-  };
-}
-
-// const curriedFunc = curry(add);
-
-// console.log(curriedFunc(3, 4)(6));
-
-const classNames = function (...args) {
-  const set = new Set();
-
-  for (let el of args) {
-    if (typeof el === "object" && !Array.isArray(el) && el != null) {
-      for (let key in el) {
-        if (Boolean(el[key])) {
-          set.add(key);
-        }
+    for (let j = i; j < s1.length + i; j++) {
+      if (s2map[s2[j]]) {
+        s2map[s2[j]]++;
+      } else {
+        s2map[s2[j]] = 1;
       }
-    } else if (Array.isArray(el)) {
-      for (let item of el) {
-        set.add(classNames(item));
+    }
+
+    let isPerm = true;
+
+    for (let key in s1map) {
+      if (s1map[key] !== s2map[key]) {
+        isPerm = false;
       }
-    } else if (!!el) {
-      set.add(el);
+    }
+
+    if (isPerm) {
+      return true;
     }
   }
 
-  let arr = [];
-
-  for (let value of set.values()) {
-    arr.push(value);
-  }
-
-  return arr.join(" ");
+  return false;
 };
 
-//console.log(classNames(null, false, "bar", "bar", undefined, 0, 1, { baz: null }, ""));
+// console.log(checkInclusion("ab", "eidbaooo"));
