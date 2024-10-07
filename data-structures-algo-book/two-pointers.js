@@ -1440,23 +1440,19 @@ const mergeArray = (nums1, nums2) => {
   return result;
 };
 
-console.log(
-  mergeArray(
-    [
-      [7, 571],
-      [63, 743],
-      [149, 42],
-      [278, 622],
-      [361, 276],
-      [554, 608],
-      [616, 28],
-      [719, 955],
-      [778, 377],
-      [1000, 853],
-    ],
-    [
-      [278, 784],
-      [891, 546],
-    ]
-  )
-);
+var getCommon = function (nums1, nums2) {
+  let i = 0;
+  let j = 0;
+
+  while (i < nums1.length && j < nums2.length) {
+    if (nums1[i] < nums2[j]) {
+      i++;
+    } else if (nums1[i] > nums2[j]) {
+      j++;
+    } else {
+      return nums1[i];
+    }
+  }
+
+  return -1;
+};
