@@ -1238,3 +1238,225 @@ const checkInclusion = (s1, s2) => {
 };
 
 // console.log(checkInclusion("ab", "eidbaooo"));
+
+const binarySearch = (nums, target) => {
+  let left = 0;
+  let right = nums.length - 1;
+
+  while (left <= right) {
+    let mid = Math.floor((left + right) / 2);
+
+    if (nums[mid] === target) {
+      return mid;
+    } else if (nums[mid] > target) {
+      right = mid - 1;
+    } else {
+      left = mid + 1;
+    }
+  }
+
+  return left;
+};
+
+const findClosestElements = (arr, k, x) => {
+  if (arr.length === k) {
+    return arr;
+  }
+
+  if (x <= arr[0]) {
+    return arr.slice(0, k);
+  }
+
+  if (x >= arr[arr.length - 1]) {
+    return arr.slice(arr.length - k);
+  }
+  let closestIndex = binarySearch(arr, x);
+  let left = closestIndex - 1;
+  let right = closestIndex;
+
+  while (right - left - 1 < k) {
+    if (left === -1) {
+      right++;
+    } else if (right === arr.length) {
+      left--;
+    } else if (Math.abs(arr[left] - x) <= Math.abs(arr[right] - x)) {
+      left--;
+    } else {
+      right++;
+    }
+  }
+
+  return arr.slice(left + 1, right);
+};
+
+// console.log(findClosestElements([1, 2, 3, 4, 5, 7, 8, 9], 4, 5)); //[3,4,5]
+
+const partitionLabels = (s) => {
+  let intervals = {};
+
+  let i = 0;
+  for (let ch of s) {
+    if (!intervals[ch]) {
+      intervals[ch] = [i, i];
+    } else {
+      intervals[ch][1] = i;
+    }
+    i++;
+  }
+
+  let partitions = [];
+
+  let start = 0,
+    end = 0;
+
+  for (let i = 0; i < s.length; i++) {
+    let ch = s[i];
+
+    end = Math.max(end, intervals[ch][1]);
+
+    if (i === end) {
+      partitions.push(i - start + 1);
+      start = i + 1;
+    }
+  }
+
+  return partitions;
+};
+
+// console.log(partitionLabels("ababcbacadefegdehijhklij"));
+
+const findTheDistanceValue = (arr1, arr2, d) => {
+  let count = 0;
+
+  arr2.sort((a, b) => a - b);
+
+  function binarySearch(nums, target) {
+    let left = 0;
+    let right = nums.length - 1;
+
+    while (left <= right) {
+      let mid = Math.floor((left + right) / 2);
+
+      if (nums[mid] === target) {
+        return mid; // Found exact match
+      } else if (nums[mid] > target) {
+        right = mid - 1;
+      } else {
+        left = mid + 1;
+      }
+    }
+    return right; // Return the index of the largest element <= target
+  }
+
+  for (let i = 0; i < arr1.length; i++) {
+    const closestIndex = binarySearch(arr2, arr1[i]);
+
+    // Handle case when closestIndex is -1 (arr1[i] is smaller than all elements in arr2)
+    let closestValue = closestIndex >= 0 ? arr2[closestIndex] : Infinity;
+
+    // Handle case when there is a closer value to the right
+    if (
+      closestIndex + 1 < arr2.length &&
+      Math.abs(arr2[closestIndex + 1] - arr1[i]) < Math.abs(closestValue - arr1[i])
+    ) {
+      closestValue = arr2[closestIndex + 1];
+    }
+
+    // Check the absolute difference
+    if (Math.abs(arr1[i] - closestValue) > d) {
+      count++;
+    }
+  }
+
+  return count;
+};
+
+// console.log(findTheDistanceValue([1, 4, 2, 3], [-4, -3, 6, 10, 20, 30], 3));
+
+const applyOperations = (nums) => {
+  for (let i = 1; i < nums.length; i++) {
+    if (nums[i - 1] === nums[i]) {
+      nums[i - 1] = nums[i - 1] * 2;
+      nums[i] = 0;
+    }
+  }
+
+  let count = 0;
+  let i = 0;
+
+  for (let num of nums) {
+    if (num === 0) {
+      count++;
+    } else {
+      nums[i] = num;
+      i++;
+    }
+  }
+
+  nums.splice(i);
+  const zeros = new Array(count).fill(0);
+
+  return [...nums, ...zeros];
+};
+
+//console.log(applyOperations([847, 847, 0, 0, 0, 399, 416, 416, 879, 879, 206, 206, 206, 272]));
+
+const mergeArray = (nums1, nums2) => {
+  let result = [];
+
+  let first = 0;
+  let second = 0;
+
+  while (first < nums1.length && second < nums2.length) {
+    const [id1, value1] = nums1[first];
+    const [id2, value2] = nums2[second];
+
+    if (id1 === id2) {
+      result.push([id2, value2 + value1]);
+      second++;
+      first++;
+    } else {
+      if (id1 > id2) {
+        result.push([id2, value2]);
+        second++;
+      } else {
+        result.push([id1, value1]);
+        first++;
+      }
+    }
+  }
+
+  if (first < nums1.length) {
+    const leftOver = nums1.slice(first);
+
+    result = [...result, ...leftOver];
+  }
+
+  if (second < nums2.length) {
+    const leftOver = nums2.slice(second);
+    result = [...result, ...leftOver];
+  }
+
+  return result;
+};
+
+console.log(
+  mergeArray(
+    [
+      [7, 571],
+      [63, 743],
+      [149, 42],
+      [278, 622],
+      [361, 276],
+      [554, 608],
+      [616, 28],
+      [719, 955],
+      [778, 377],
+      [1000, 853],
+    ],
+    [
+      [278, 784],
+      [891, 546],
+    ]
+  )
+);
