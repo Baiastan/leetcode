@@ -651,4 +651,4 @@ const deepEqual = (valueA, valueB) => {
   return true;
 };
 
-console.log(deepEqual({ foo: [], item: [1, 2, { baz: undefined }] }, { foo: [], item: [1, 2, { baz: undefined }] }));
+// console.log(deepEqual({ foo: [], item: [1, 2, { baz: undefined }] }, { foo: [], item: [1, 2, { baz: undefined }] }));
